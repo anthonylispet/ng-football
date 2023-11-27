@@ -17,7 +17,7 @@ export class LeagueListComponent implements OnInit,OnDestroy{
   }
 
   leagueSelected(league:League){
-
+    this.footService.selectCurrentLeague(league);
   }
 
   ngOnInit(): void {

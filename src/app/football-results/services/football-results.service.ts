@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import {map, Observable, of} from "rxjs";
+import { map, Observable, of, Subject} from "rxjs";
 import {HttpClient, HttpHeaders} from "@angular/common/http";
 import {ApiLeague, Response} from "../models/api-leagues";
 import {League} from "../models/league";
@@ -14,6 +14,10 @@ export class FootballResultsService {
   private apiUrl = "https://v3.football.api-sports.io/";
 
   leagueId: number[]= [39,140,61,78,135]
+
+  private _currentLeague: Subject<League> = new Subject<League>();
+  currentLeague$ = this._currentLeague.asObservable();
+
 
   constructor(private http:HttpClient) { }
 
@@ -31,6 +35,10 @@ export class FootballResultsService {
         } as League));
     }));
   }*/
+
+  selectCurrentLeague(league:League){
+    this._currentLeague.next(league);
+  }
 
   getLeagues(): Observable<League[]>{
    return of(mockData).pipe(map( (response) => {

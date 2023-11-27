@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import {FootballResultsService} from "../../services/football-results.service";
 
 @Component({
   selector: 'app-standing',
@@ -7,4 +8,9 @@ import { Component } from '@angular/core';
 })
 export class StandingComponent {
 
+  constructor(private footService: FootballResultsService){}
+
+  get currentLeague(){
+    return this.footService.currentLeague$;
+  }
 }
