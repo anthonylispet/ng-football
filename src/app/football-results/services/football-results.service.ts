@@ -22,12 +22,14 @@ export class FootballResultsService {
       'x-apisports-key': this.apiKey,
     });
     return this.http.get<ApiLeague>(`${this.apiUrl}/leagues?current=true`,{headers}).pipe(map( (response) => {
-      return response.response.filter((response)=>  this.leagueId.includes(response.league.id)).map((response) => ({
-       country: response.country.name,
-       name: response.league.name,
-       apiId: response.league.id,
-       currentSeason: response.seasons.filter(season => season.current === true)[0].year
-     } as League));
+      return response.response.filter((response)=>  this.leagueId.includes(response.league.id))
+        .map((response) => ({
+          country: response.country.name,
+          name: response.league.name,
+          apiId: response.league.id,
+          currentSeason: response.seasons.filter(season => season.current === true)[0].year
+        } as League));
+    }));
   }*/
 
   getCurrentSeason(): Observable<League[]>{
