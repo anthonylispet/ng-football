@@ -17,7 +17,7 @@ export class FootballResultsService {
 
   constructor(private http:HttpClient) { }
 
-  /*getCurrentSeason(): Observable<League[]>{
+  /*getLeagues(): Observable<League[]>{
     const headers = new HttpHeaders({
       'x-apisports-key': this.apiKey,
     });
@@ -32,7 +32,7 @@ export class FootballResultsService {
     }));
   }*/
 
-  getCurrentSeason(): Observable<League[]>{
+  getLeagues(): Observable<League[]>{
    return of(mockData).pipe(map( (response) => {
      return response.response.filter((response)=>  this.leagueId.includes(response.league.id))
                              .map((response) => ({
