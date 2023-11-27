@@ -2,3 +2,8 @@
   width: 120px;
   cursor : pointer;
 }
+
+.nav-item.active {
+  background-color: #ffda6a;
+  border-radius: 15px;
+}

@@ -1,7 +1,7 @@
 export class League {
-  country: string ;
-  name: string;
-  apiId:number;
+  country?: string ;
+  name?: string;
+  apiId?:number;
   currentSeason?:number;
 
   constructor(country:string, name :string,apiId:number,currentSeason:number){

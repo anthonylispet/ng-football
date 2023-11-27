@@ -16,8 +16,12 @@ export class LeagueListComponent implements OnInit,OnDestroy{
   constructor(private footService:FootballResultsService) {
   }
 
-  leagueSelected(league:League){
+  leagueSelect(league:League){
     this.footService.selectCurrentLeague(league);
+  }
+
+  isActive(league:League): boolean{
+    return this.footService.currentLeague === league ? true : false
   }
 
   ngOnInit(): void {
