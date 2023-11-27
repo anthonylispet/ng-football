@@ -16,9 +16,12 @@ export class LeagueListComponent implements OnInit,OnDestroy{
   constructor(private footService:FootballResultsService) {
   }
 
+  leagueSelected(league:League){
+
+  }
+
   ngOnInit(): void {
     this.footService.getLeagues().pipe(takeUntil(this.destroyed$)).subscribe(value => {
-      console.log(value)
       this.leagues = value;
     });
 

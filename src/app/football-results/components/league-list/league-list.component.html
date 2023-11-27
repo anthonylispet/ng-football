@@ -3,7 +3,7 @@
     <div class="collapse navbar-collapse" id="navbarNav">
       <ul class="navbar-nav mx-auto text-center">
         <li class="nav-item custom-nav-item" *ngFor="let league of leagues">
-          <a class="nav-link" [routerLink]="">{{ league.country }}</a>
+          <a class="nav-link" (click)="leagueSelected(league)">{{league.country}}</a>
         </li>
       </ul>
     </div>
