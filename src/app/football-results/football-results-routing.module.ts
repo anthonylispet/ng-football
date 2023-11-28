@@ -5,7 +5,7 @@ import {StandingComponent} from "./components/standing/standing.component";
 
 const routes: Routes = [
   { path: '', component:FootballResultsComponent },
-  { path:'football-results', component:FootballResultsComponent},
+  { path: '**', redirectTo :'' }
 
 ];
 
