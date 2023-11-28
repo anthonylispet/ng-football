@@ -1,12 +1,12 @@
 <div class="d-flex flex-grow-1 flex-column align-items-center">
   <div *ngIf="currentStanding | async as standings; else empty">
     <div class="container mt-5 ">
-      <table class="table table-bordered">
+      <table class="table table-bordered" style="width:800px !important;">
         <thead class="thead-dark">
         <tr>
           <th scope="col"></th>
           <th scope="col"></th>
-          <th scope="col-2">Name</th>
+          <th scope="col">Name</th>
           <th scope="col">Games</th>
           <th scope="col">W</th>
           <th scope="col">L</th>
@@ -19,11 +19,11 @@
         <tr *ngFor="let standing of standings">
           <td>{{standing.rank}}</td>
           <td><img [attr.src]="standing?.team?.logo" class="logo"></td>
-          <td >{{standing?.team?.name}}</td>
+          <td style="width:250px">{{standing?.team?.name}}</td>
           <td >{{standing?.all?.played}}</td>
-          <td >{{standing?.all?.win}}</td>
-          <td >{{standing?.all?.lose}}</td>
-          <td >{{standing?.all?.draw}}</td>
+          <td style="width:40px">{{standing?.all?.win}}</td>
+          <td style="width:40px">{{standing?.all?.lose}}</td>
+          <td style="width:40px">{{standing?.all?.draw}}</td>
           <td >{{standing?.goalsDiff}}</td>
           <td >{{standing?.points}}</td>
         </tr>
