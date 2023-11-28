@@ -1,9 +1,27 @@
 .custom-nav-item {
-  width: 120px;
+  max-width: 100px;
+  width:100px;
   cursor : pointer;
+  min-height: 35px;
 }
 
 .nav-item.active {
   background-color: #ffda6a;
   border-radius: 15px;
 }
+
+ul {
+  list-style: none;
+  display: flex;
+  margin: 0;
+  padding: 0;
+}
+
+li {
+  text-align: center;
+  line-height: 40px;
+}
+
+
+
+
