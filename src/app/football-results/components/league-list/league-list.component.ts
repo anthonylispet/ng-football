@@ -1,6 +1,6 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
 import {League} from "../../models/league";
-import {FootballResultsService} from "../../services/football-results.service";
+import {LeagueService} from "../../services/league.service";
 import { Subject, takeUntil} from "rxjs";
 
 @Component({
@@ -13,7 +13,7 @@ export class LeagueListComponent implements OnInit,OnDestroy{
 
   leagues: League[]=[];
 
-  constructor(private footService:FootballResultsService) {
+  constructor(private footService:LeagueService) {
   }
 
   leagueSelect(league:League){

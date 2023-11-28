@@ -8,14 +8,15 @@ import {mockData} from "../models/mock.leagues"
 @Injectable({
   providedIn: 'root'
 })
-export class FootballResultsService {
+export class LeagueService {
 
   private apiKey :string = "19332c6ea72f76eb2cd3608a1f623959"
   private apiUrl = "https://v3.football.api-sports.io/";
 
   leagueId: number[]= [39,140,61,78,135]
 
-  private _currentLeague: BehaviorSubject<League|null> = new BehaviorSubject<League|null>(null);
+  // @ts-ignore
+  private _currentLeague: BehaviorSubject<League> = new BehaviorSubject<League>(null);
   currentLeague$ = this._currentLeague.asObservable();
 
 
@@ -36,15 +37,20 @@ export class FootballResultsService {
     this._currentLeague.next(league);
   }
 
-  get currentLeague() :League | null {
+  get currentLeague() :League  {
     return this._currentLeague.getValue()
   }
 
-  getLeagues(): Observable<League[]>{
-   return of(mockData).pipe(map( (response) => {
-     return response.response.filter((response )=>  this.leagueId.includes(response.league.id))
-       .map(response => new League(response.country.name,response.league.name, response.league.id,
-         response.seasons.filter(season => season.current===true)[0].year));
-   }));
-  }
+
+  getLeagues(): Observable<League[]> {
+    /*if (JSON.parse(localStorage.getItem("zipCodes")) !== null) {
+
+    } else {*/
+      return of(mockData).pipe(map((response) => {
+        return response.response.filter((response) => this.leagueId.includes(response.league.id))
+          .map(response => new League(response.country.name, response.league.name, response.league.id,
+            response.seasons.filter(season => season.current === true)[0].year));
+      }));
+    }
+  //}
 }
