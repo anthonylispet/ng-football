@@ -26,7 +26,7 @@ export class LeagueService {
   getLeagues(): Observable<League[]>{
     const cachedData = this.cacheService.get(this.cacheKey)
     if (cachedData) {
-      return of(cachedData);
+      return of(cachedData) as Observable<League[]>;
     }else {
       const headers = new HttpHeaders({
         'x-apisports-key': this.apiKey,

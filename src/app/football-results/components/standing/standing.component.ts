@@ -1,16 +1,37 @@
-import { Component } from '@angular/core';
+import {Component, OnDestroy, OnInit} from '@angular/core';
 import {LeagueService} from "../../services/league.service";
+import {Subject, takeUntil} from "rxjs";
+import {StandingsService} from "../../services/standings.service";
+import {Standing} from "../../models/standing";
 
 @Component({
   selector: 'app-standing',
   templateUrl: './standing.component.html',
   styleUrls: ['./standing.component.scss']
 })
-export class StandingComponent {
+export class StandingComponent implements OnInit,OnDestroy{
 
-  constructor(private footService: LeagueService){}
+  private destroyed$: Subject<boolean> = new Subject();
+  standing:Standing[]=[];
 
-  get currentLeague(){
-    return this.footService.currentLeague$;
+  constructor(private leagueService: LeagueService,private standingService:StandingsService){}
+
+  get currentStanding(){
+    return this.standingService.currentStanding$;
+  }
+
+  ngOnInit(): void {
+    this.leagueService.currentLeague$.pipe(takeUntil(this.destroyed$)).subscribe(league => {
+      if (league) {
+        this.standingService.getStandings(league).pipe(takeUntil(this.destroyed$)).subscribe(value => {
+            this.standingService.setCurrentStanding(value);
+        });
+      }
+    });
+  }
+
+  ngOnDestroy(): void {
+    this.destroyed$.next(true);
+    this.destroyed$.complete();
   }
 }

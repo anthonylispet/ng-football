@@ -13,19 +13,19 @@ export class LeagueListComponent implements OnInit,OnDestroy{
 
   leagues: League[]=[];
 
-  constructor(private footService:LeagueService) {
+  constructor(private leagueService:LeagueService) {
   }
 
   leagueSelect(league:League){
-    this.footService.selectCurrentLeague(league);
+    this.leagueService.selectCurrentLeague(league);
   }
 
   isActive(league:League): boolean{
-    return this.footService.currentLeague === league ? true : false
+    return this.leagueService.currentLeague === league ? true : false
   }
 
   ngOnInit(): void {
-    this.footService.getLeagues().pipe(takeUntil(this.destroyed$)).subscribe(value => {
+    this.leagueService.getLeagues().pipe(takeUntil(this.destroyed$)).subscribe(value => {
       this.leagues = value;
     });
 
