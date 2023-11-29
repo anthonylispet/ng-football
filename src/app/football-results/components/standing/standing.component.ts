@@ -2,7 +2,7 @@ import {Component, OnDestroy, OnInit} from '@angular/core';
 import {LeagueService} from "../../services/league.service";
 import {Subject, takeUntil} from "rxjs";
 import {StandingsService} from "../../services/standings.service";
-import {Standing} from "../../models/standing";
+import {Standing} from "../../models/class/standing";
 
 @Component({
   selector: 'app-standing',

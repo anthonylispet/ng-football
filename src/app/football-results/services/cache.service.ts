@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import {cacheData, cacheType} from "../models/cacheType";
+import {cacheData, cacheType} from "../models/class/cacheType";
 
 @Injectable({
   providedIn: 'root',
@@ -19,7 +19,6 @@ export class CacheService {
 
 
   set(key: string, data: cacheType, expirationMs: number): void {
-    console.log("data",data);
     const expiration = Date.now() + expirationMs;
     const cachedData = { data: data, expiration: expiration } as cacheData;
     // @ts-ignore

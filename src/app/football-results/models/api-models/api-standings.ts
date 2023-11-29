@@ -37,7 +37,7 @@ export enum Name {
 
 export interface ApiStanding {
   rank:        number;
-  team:        Team;
+  team:        ApiTeam;
   points:      number;
   goalsDiff:   number;
   group:       Name;
@@ -67,7 +67,7 @@ export enum Status {
   Same = "same",
 }
 
-export interface Team {
+export interface ApiTeam {
   id:   number;
   name: string;
   logo: string;

@@ -1,5 +1,5 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
-import {League} from "../../models/league";
+import {League} from "../../models/class/league";
 import {LeagueService} from "../../services/league.service";
 import { Subject, takeUntil} from "rxjs";
 

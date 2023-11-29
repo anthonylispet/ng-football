@@ -1,5 +1,5 @@
 import {Team} from "./team";
-import {All, ApiStanding} from "./api-models/api-standings";
+import {All, ApiStanding} from "../api-models/api-standings";
 
 export class Standing {
   rank : number;

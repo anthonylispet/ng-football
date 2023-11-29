@@ -2,8 +2,7 @@ import { Injectable } from '@angular/core';
 import {BehaviorSubject, map, Observable, of, Subject} from "rxjs";
 import {HttpClient, HttpHeaders} from "@angular/common/http";
 import {ApiLeague, Response} from "../models/api-models/api-leagues";
-import {League} from "../models/league";
-import {mockData} from "../models/mock.leagues"
+import {League} from "../models/class/league";
 import {CacheService} from "./cache.service";
 
 @Injectable({
@@ -33,11 +32,15 @@ export class LeagueService {
       });
 
       return this.http.get<ApiLeague>(`${this.apiUrl}/leagues?current=true`,{headers}).pipe(map( (response) => {
-        let data = response.response.filter((response) => this.leagueId.includes(response.league.id))
-          .map(response => new League(response.country.name, response.league.name, response.league.id,
-            response.seasons.filter(season => season.current === true)[0].year));
-        this.cacheService.set(this.cacheKey, data, 24 * 60 * 60 * 1000);
-        return data
+        if (response.errors.length === 0) {
+          let data = response.response.filter((response) => this.leagueId.includes(response.league.id))
+            .map(response => new League(response.country.name, response.league.name, response.league.id,
+              response.seasons.filter(season => season.current === true)[0].year));
+          this.cacheService.set(this.cacheKey, data, 24 * 60 * 60 * 1000);
+          return data
+        }else{
+          return [];
+        }
       }));
     }
   }

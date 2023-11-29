@@ -5,7 +5,13 @@
     </div>
   </div>
   <div class="rounded-3 d-flex flex-grow-1 m-2 flex-column bg-light tableContainer">
-    test
+      <div class="table-container">
+        <div *ngFor="let fixture of fixtures" class="table-row">
+          <div style="width:300px"><img [attr.src]="fixture?.homeTeam?.logo"/> {{ fixture?.homeTeam?.name}}</div>
+          <div style="width:100px">{{ fixture?.goals?.home}} - {{ fixture?.goals?.away}}</div>
+          <div style="width:300px">{{ fixture?.awayTeam?.name}} <img [attr.src]="fixture?.awayTeam?.logo"/></div>
+        </div>
+      </div>
+    <button class="btn btn-success mt-2" tabindex="0" id="mainPageBtn" [routerLink]="''">&lt; Back</button>
   </div>
-  <button class="btn btn-success" tabindex="0" id="mainPageBtn" [routerLink]="''">&lt; Back</button>
 </div>

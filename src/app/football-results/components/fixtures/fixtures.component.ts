@@ -1,19 +1,34 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, OnDestroy, OnInit} from '@angular/core';
 import {ActivatedRoute} from "@angular/router";
+import {FixturesService} from "../../services/fixtures.service";
+import {Fixture} from "../../models/class/fixture";
+import {Subject, takeUntil} from "rxjs";
 
 @Component({
   selector: 'app-fixtures',
   templateUrl: './fixtures.component.html',
   styleUrls: ['./fixtures.component.scss']
 })
-export class FixturesComponent implements OnInit{
+export class FixturesComponent implements OnInit, OnDestroy{
 
+  private teamId!: string;
+  private destroyed$: Subject<boolean> = new Subject();
 
-  constructor(private route:ActivatedRoute) {
+  fixtures: Fixture[]=[];
+  constructor(private route:ActivatedRoute,private fixtureService: FixturesService) {
    }
 
   ngOnInit(): void {
-    let teamId = this.route.snapshot.paramMap.get("teamId");
+    // @ts-ignore
+    this.teamId = this.route.snapshot.paramMap.get("teamId");
+    this.fixtureService.getFixtures(this.teamId).pipe(takeUntil(this.destroyed$)).subscribe(fixtures => {
+      this.fixtures = fixtures;
+    })
+  }
+
+  ngOnDestroy(): void {
+    this.destroyed$.next(true);
+    this.destroyed$.complete();
   }
 
 }
