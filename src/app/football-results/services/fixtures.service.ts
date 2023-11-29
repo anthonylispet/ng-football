@@ -30,7 +30,7 @@ export class FixturesService {
           map(response => {
             if (response.errors.length === 0) {
               let data = response.response.map(response => new Fixture(response.teams.home, response.teams.away, response.goals));
-              this.cacheService.set(this.cacheKey + teamId, data, 24 * 60 * 60 * 1000);
+              this.cacheService.set(this.cacheKey + teamId, data,  60 * 60 * 1000);
               return data;
             } else {
               return [];
