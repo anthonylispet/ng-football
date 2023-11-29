@@ -2,4 +2,40 @@
   width:25px;
 }
 
+.table-container {
+  display: flex;
+  flex-direction: column;
+  border: 1px solid #ccc;
+  max-width: 800px;
+}
 
+.table-header div{
+  border-right: 1px solid #babbbc;
+  height:40px;
+  padding:0px;
+}
+
+.table-header,
+.table-row {
+  display: flex;
+  justify-content: space-between;
+  text-align: center;
+  align-items: center;
+  padding: 5px;
+  border-bottom: 1px solid #ccc;
+}
+
+.table-header {
+  font-weight: bold;
+  background-color: #f0f0f0;
+}
+
+.table-row div {
+  flex-grow: 1;
+  text-align: center;
+  height:35px;
+}
+
+.table-row div:not(:last-child) {
+  border-right: 1px solid #ccc;
+}
