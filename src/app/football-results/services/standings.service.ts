@@ -4,7 +4,7 @@ import {League} from "../models/league";
 import {Standing} from "../models/standing";
 import {HttpClient, HttpHeaders} from "@angular/common/http";
 import {CacheService} from "./cache.service";
-import {ApiStandings} from "../models/api-standings";
+import {ApiStandings} from "../models/api-models/api-standings";
 import {mockData} from "../models/mock.standings"
 
 @Injectable({

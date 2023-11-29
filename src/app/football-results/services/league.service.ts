@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import {BehaviorSubject, map, Observable, of, Subject} from "rxjs";
 import {HttpClient, HttpHeaders} from "@angular/common/http";
-import {ApiLeague, Response} from "../models/api-leagues";
+import {ApiLeague, Response} from "../models/api-models/api-leagues";
 import {League} from "../models/league";
 import {mockData} from "../models/mock.leagues"
 import {CacheService} from "./cache.service";

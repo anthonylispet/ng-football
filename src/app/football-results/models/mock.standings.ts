@@ -1,4 +1,4 @@
-import {ApiStandings} from "./api-standings";
+import {ApiStandings} from "./api-models/api-standings";
 
 export const mockData= {
 

@@ -4,6 +4,8 @@ import { FootballResultsComponent } from './pages/football-results/football-resu
 import {FootballResultsRoutingModule} from "./football-results-routing.module";
 import { LeagueListComponent } from './components/league-list/league-list.component';
 import { StandingComponent } from './components/standing/standing.component';
+import {LinkDirective} from "./directives/link-directive";
+import { FixturesComponent } from './components/fixtures/fixtures.component';
 
 
 
@@ -11,7 +13,9 @@ import { StandingComponent } from './components/standing/standing.component';
   declarations: [
     FootballResultsComponent,
     LeagueListComponent,
-    StandingComponent
+    StandingComponent,
+    LinkDirective,
+    FixturesComponent
   ],
   imports: [
     CommonModule,

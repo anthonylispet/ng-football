@@ -20,8 +20,8 @@ export class LeagueListComponent implements OnInit,OnDestroy{
     this.leagueService.selectCurrentLeague(league);
   }
 
-  isActive(league:League): boolean{
-    return this.leagueService.currentLeague === league ? true : false
+  isActive(league:League): boolean {
+    return this.leagueService.currentLeague?.apiId === league?.apiId ? true : false
   }
 
   ngOnInit(): void {

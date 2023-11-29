@@ -16,7 +16,9 @@
         <div *ngFor="let standing of standings" class="table-row" style="padding:0px !important;">
          <div style="width:40px">{{standing.rank}}</div>
           <div style="width:40px"><img [attr.src]="standing?.team?.logo" class="logo"></div>
-          <div style="width:250px;text-align:start;padding-left:5px" >{{standing?.team?.name}}</div>
+          <div style="width:250px;text-align:start;padding-left:5px" appLink>
+            <a [routerLink]="'/fixtures/'+standing?.team?.id">{{standing?.team?.name}}</a>
+          </div>
           <div style="width:70px">{{standing?.all?.played}}</div>
           <div style="width:40px">{{standing?.all?.win}}</div>
           <div style="width:40px">{{standing?.all?.lose}}</div>
