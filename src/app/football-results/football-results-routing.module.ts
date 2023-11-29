@@ -7,7 +7,7 @@ import {FixturesComponent} from "./components/fixtures/fixtures.component";
 const routes: Routes = [
   { path: '', component:FootballResultsComponent },
   { path: 'fixtures/:teamId', component:FixturesComponent },
-  { path: '**', redirectTo :'' }
+  { path: '**', redirectTo :'/' }
 
 ];
 
