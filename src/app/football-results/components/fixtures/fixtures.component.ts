@@ -11,7 +11,7 @@ import {Subject, takeUntil} from "rxjs";
 })
 export class FixturesComponent implements OnInit, OnDestroy{
 
-  private teamId!: string;
+  private teamId!: string | null;
   private destroyed$: Subject<boolean> = new Subject();
 
   fixtures: Fixture[]=[];
@@ -19,11 +19,12 @@ export class FixturesComponent implements OnInit, OnDestroy{
    }
 
   ngOnInit(): void {
-    // @ts-ignore
     this.teamId = this.route.snapshot.paramMap.get("teamId");
-    this.fixtureService.getFixtures(this.teamId).pipe(takeUntil(this.destroyed$)).subscribe(fixtures => {
-      this.fixtures = fixtures;
-    })
+    if (this.teamId != null) {
+      this.fixtureService.getFixtures(this.teamId).pipe(takeUntil(this.destroyed$)).subscribe(fixtures => {
+        this.fixtures = fixtures;
+      })
+    }
   }
 
   ngOnDestroy(): void {

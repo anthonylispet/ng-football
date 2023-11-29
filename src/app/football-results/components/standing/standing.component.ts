@@ -12,7 +12,6 @@ import {Standing} from "../../models/class/standing";
 export class StandingComponent implements OnInit,OnDestroy{
 
   private destroyed$: Subject<boolean> = new Subject();
-  standing:Standing[]=[];
 
   constructor(private leagueService: LeagueService,private standingService:StandingsService){}
 
