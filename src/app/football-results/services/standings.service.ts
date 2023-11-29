@@ -33,7 +33,7 @@ export class StandingsService {
         return this.http.get<ApiStandings>(`${this.apiUrl}/standings?league=${league.apiId}&season=${league.currentSeason}`, {headers})
           .pipe(map(response => {
             if (response.errors.length === 0) {
-              let data = response.response[0].league.standings[0].map(apiStanding => new Standing(apiStanding));
+              let data = response.response[0].league.standings[0].sort((a, b) => b.rank + a.rank).map(apiStanding => new Standing(apiStanding));
               this.cacheService.set(this.cacheKey + league.apiId, data, 24 * 60 * 60 * 1000);
               return data;
             }else {
