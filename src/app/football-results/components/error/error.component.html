@@ -1,0 +1,4 @@
+<div *ngIf="currentError | async as error; else empty">
+    {{error}}
+</div>
+<ng-template #empty></ng-template>

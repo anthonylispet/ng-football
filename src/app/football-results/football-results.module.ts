@@ -6,6 +6,7 @@ import { LeagueListComponent } from './components/league-list/league-list.compon
 import { StandingComponent } from './components/standing/standing.component';
 import {LinkDirective} from "./directives/link-directive";
 import { FixturesComponent } from './components/fixtures/fixtures.component';
+import { ErrorComponent } from './components/error/error.component';
 
 
 
@@ -15,7 +16,8 @@ import { FixturesComponent } from './components/fixtures/fixtures.component';
     LeagueListComponent,
     StandingComponent,
     LinkDirective,
-    FixturesComponent
+    FixturesComponent,
+    ErrorComponent
   ],
   imports: [
     CommonModule,

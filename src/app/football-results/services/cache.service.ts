@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import {cacheData, cacheType} from "../models/class/cacheType";
+import {cacheData,cacheType} from "../models/class/cach-data";
 
 @Injectable({
   providedIn: 'root',

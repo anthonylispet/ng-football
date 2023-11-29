@@ -1,9 +1,10 @@
 import { Injectable } from '@angular/core';
-import {BehaviorSubject, map, Observable, of, Subject} from "rxjs";
+import {BehaviorSubject, catchError, map, Observable, of, Subject} from "rxjs";
 import {HttpClient, HttpHeaders} from "@angular/common/http";
 import {ApiLeague, Response} from "../models/api-models/api-leagues";
 import {League} from "../models/class/league";
 import {CacheService} from "./cache.service";
+import {ErrorService} from "./error.service";
 
 @Injectable({
   providedIn: 'root'
@@ -20,9 +21,10 @@ export class LeagueService {
   currentLeague$ = this._currentLeague.asObservable();
 
 
-  constructor(private http:HttpClient,private cacheService:CacheService) { }
+  constructor(private http:HttpClient,private cacheService:CacheService,private errorService:ErrorService) { }
 
   getLeagues(): Observable<League[]>{
+    this.errorService.flush();
     const cachedData = this.cacheService.get(this.cacheKey)
     if (cachedData) {
       return of(cachedData) as Observable<League[]>;
@@ -31,17 +33,23 @@ export class LeagueService {
         'x-apisports-key': this.apiKey,
       });
 
-      return this.http.get<ApiLeague>(`${this.apiUrl}/leagues?current=true`,{headers}).pipe(map( (response) => {
+      return this.http.get<ApiLeague>(`${this.apiUrl}/leagues?current=true`,{headers}).pipe(map( (response :ApiLeague) => {
+
         if (response.errors.length === 0) {
           let data = response.response.filter((response) => this.leagueId.includes(response.league.id))
             .map(response => new League(response.country.name, response.league.name, response.league.id,
               response.seasons.filter(season => season.current === true)[0].year));
           this.cacheService.set(this.cacheKey, data, 24 * 60 * 60 * 1000);
           return data
-        }else{
-          return [];
+        } else {
+          const firstKey = Object.values(response.errors);
+          throw new Error( firstKey[0] ?? 'Unknown Error');
         }
-      }));
+      },
+          catchError(error => {
+            this.errorService.setCurrentError(error);
+            return [] ;
+          })));
     }
   }
 

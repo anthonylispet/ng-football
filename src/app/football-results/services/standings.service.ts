@@ -1,11 +1,11 @@
 import { Injectable } from '@angular/core';
-import {BehaviorSubject, map, Observable, of} from "rxjs";
+import {BehaviorSubject, catchError, map, Observable, of} from "rxjs";
 import {League} from "../models/class/league";
 import {Standing} from "../models/class/standing";
 import {HttpClient, HttpHeaders} from "@angular/common/http";
 import {CacheService} from "./cache.service";
 import {ApiStandings} from "../models/api-models/api-standings";
-import {mockData} from "../models/mock.standings"
+import {ErrorService} from "./error.service";
 
 @Injectable({
   providedIn: 'root'
@@ -16,12 +16,13 @@ export class StandingsService {
   private cacheKey="standings"
 
   // @ts-ignore
-  private _currentStanding: BehaviorSubject<Standing[]> = new BehaviorSubject<Standing[]>(null);
+  private _currentStanding: BehaviorSubject<Standing[] | null> = new BehaviorSubject<Standing[]>(null);
   currentStanding$ = this._currentStanding.asObservable();
 
-  constructor(private http:HttpClient,private cacheService:CacheService) { }
+  constructor(private http:HttpClient,private cacheService:CacheService,private errorService:ErrorService) { }
 
   getStandings(league:League): Observable<Standing[]>{
+      this.errorService.flush();
       const cachedData = this.cacheService.get(this.cacheKey + league?.apiId)
       if (cachedData) {
         return of(cachedData) as Observable<Standing[]>;
@@ -30,21 +31,27 @@ export class StandingsService {
           'x-apisports-key': this.apiKey,
         });
 
-        return this.http.get<ApiStandings>(`${this.apiUrl}/standings?league=${league.apiId}&season=${league.currentSeason}`, {headers})
-          .pipe(map(response => {
-            if (response.errors.length === 0) {
-              let data = response.response[0].league.standings[0].sort((a, b) => b.rank + a.rank).map(apiStanding => new Standing(apiStanding));
-              this.cacheService.set(this.cacheKey + league.apiId, data,  60 * 60 * 1000);
-              return data;
-            }else {
-              return [];
-            }
-          }));
+          return this.http.get<ApiStandings>(`${this.apiUrl}/standings?league=${league.apiId}&season=${league.currentSeason}`, {headers})
+              .pipe(map(response => {
+                      if (response.errors.length === 0) {
+                          let data = response.response[0].league.standings[0].sort((a, b) => b.rank + a.rank).map(apiStanding => new Standing(apiStanding));
+                          this.cacheService.set(this.cacheKey + league.apiId, data,  60 * 60 * 1000);
+                          return data;
+                      } else {
+                          const firstKey = Object.values(response.errors);
+                          throw new Error( firstKey[0] ?? 'Unknown Error');
+                      }
+                  }),
+                  catchError(error => {
+                      this.errorService.setCurrentError(error);
+                      this.setCurrentStanding(null);
+                      return [] ;
+                  }));
       }
 
   }
 
-  setCurrentStanding(standing:Standing[]){
+  setCurrentStanding(standing:Standing[] |null){
     this._currentStanding.next(standing);
   }
 }

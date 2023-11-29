@@ -1,5 +1,6 @@
 <div class="d-flex flex-grow-1 flex-column align-items-center">
-  <div *ngIf="currentStanding | async as standings; else empty">
+    <app-error></app-error>
+    <div *ngIf="currentStanding | async as standings; else empty">
     <div class="container mt-5 ">
       <div class="table-container">
         <div class="table-header" style="padding:0px;">

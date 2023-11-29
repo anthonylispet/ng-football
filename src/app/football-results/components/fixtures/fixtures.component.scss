@@ -11,7 +11,9 @@ img{
 .table-container {
   border: 1px solid #ccc;
 }
-
+.tableContainer{
+  min-width :800px;
+}
 .table-row {
   display: flex;
   justify-content: space-between;

@@ -1,6 +1,6 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
 import {LeagueService} from "../../services/league.service";
-import {Subject, takeUntil} from "rxjs";
+import {Observable, Subject, takeUntil} from "rxjs";
 import {StandingsService} from "../../services/standings.service";
 import {Standing} from "../../models/class/standing";
 
@@ -15,7 +15,7 @@ export class StandingComponent implements OnInit,OnDestroy{
 
   constructor(private leagueService: LeagueService,private standingService:StandingsService){}
 
-  get currentStanding(){
+  get currentStanding(): Observable<Standing[] | null>{
     return this.standingService.currentStanding$;
   }
 
@@ -23,7 +23,7 @@ export class StandingComponent implements OnInit,OnDestroy{
     this.leagueService.currentLeague$.pipe(takeUntil(this.destroyed$)).subscribe(league => {
       if (league) {
         this.standingService.getStandings(league).pipe(takeUntil(this.destroyed$)).subscribe(value => {
-            this.standingService.setCurrentStanding(value);
+          this.standingService.setCurrentStanding(value);
         });
       }
     });

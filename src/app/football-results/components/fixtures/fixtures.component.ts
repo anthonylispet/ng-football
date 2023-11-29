@@ -23,7 +23,7 @@ export class FixturesComponent implements OnInit, OnDestroy{
     if (this.teamId != null) {
       this.fixtureService.getFixtures(this.teamId).pipe(takeUntil(this.destroyed$)).subscribe(fixtures => {
         this.fixtures = fixtures;
-      })
+      });
     }
   }
 
@@ -31,5 +31,8 @@ export class FixturesComponent implements OnInit, OnDestroy{
     this.destroyed$.next(true);
     this.destroyed$.complete();
   }
+
+
+
 
 }
