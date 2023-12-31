@@ -7,6 +7,7 @@ import { StandingComponent } from './components/standing/standing.component';
 import {LinkDirective} from "./directives/link-directive";
 import { FixturesComponent } from './components/fixtures/fixtures.component';
 import { ErrorComponent } from './components/error/error.component';
+import { BarakiRandomComponent } from './pages/baraki-random/baraki-random.component';
 
 
 
@@ -17,7 +18,8 @@ import { ErrorComponent } from './components/error/error.component';
     StandingComponent,
     LinkDirective,
     FixturesComponent,
-    ErrorComponent
+    ErrorComponent,
+    BarakiRandomComponent
   ],
   imports: [
     CommonModule,

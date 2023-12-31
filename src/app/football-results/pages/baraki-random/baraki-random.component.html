@@ -1,0 +1,16 @@
+<!--<div class="container mt-3 align-items-center d-flex flex-column align-items-center justify-content-center bg-dark" *ngIf="phraseActuelle!=''">
+  <p class="lead text-orange" >{{ phraseActuelle }}</p>
+</div>
+<div class="container text-center mt-5 d-flex flex-column align-items-center justify-content-center bg-dark">
+  <button class="btn btn-primary btn-lg" (click)="nouvellePhrase()">Deviens un baraki !</button>
+  <button class="btn btn-danger btn-lg mt-2" (click)="resetPhrases()" *ngIf="nbPhraseLeft === 0">Réinitialiser</button>
+</div>-->
+
+<div class="container-fluid d-flex flex-column align-items-center justify-content-center background vh-100 v-100 w-100 !important">
+  <div style="height:150px !important">
+    <p class="mx-auto text-center text-orange" *ngIf="phraseActuelle!=''">{{ phraseActuelle }}</p>
+  </div>
+  <button class="btn btn-primary btn-lg mb-3" (click)="nouvellePhrase()">Deviens un baraki !</button>
+  <button class="btn btn-danger btn-lg mb-3" (click)="resetPhrases()" *ngIf="nbPhraseLeft === 0">Réinitialiser</button>
+</div>
+
