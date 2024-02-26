@@ -1,0 +1,16 @@
+[
+  {"id" : 1,"name": "Edgar markov, le Magnifique", "player" : "A"},
+  {"id" : 2,"name": "Kaalia", "player" : "A"},
+  {"id" : 3,"name": "Plunder the graves", "player" : "A"},
+  {"id" : 4,"name": "Kathrill", "player" : "A"},
+  {"id" : 5,"name": "Sauron", "player" : "A"},
+  {"id" : 6,"name": "Deck blanc à chier", "player" : "A"},
+  {"id" : 7,"name": "Vampire 2", "player" : "A"},
+  {"id" : 8,"name": "Otrimi", "player" : "P"},
+  {"id" : 9,"name": "Sevinne", "player" : "P"},
+  {"id" : 10,"name": "Poison", "player" : "P"},
+  {"id" : 11,"name": "Odins", "player" : "P"},
+  {"id" : 12,"name": "Esprits", "player" : "P"},
+  {"id" : 13,"name": "horreurs", "player" : "P"},
+  {"id" : 14,"name": "Folie", "player" : "P"}
+]
