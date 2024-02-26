@@ -1,0 +1,7 @@
+.mainDiv{
+  display: flex;
+  height: calc(100vh - 105px);
+  overflow-y: auto;
+  flex-direction: column; /* Les éléments sont empilés verticalement */
+  align-items: center; /* Centrer horizontalement */
+}

@@ -1,0 +1,9 @@
+
+<div class="mainDiv">
+    <div *ngFor="let match of matchs; let i = index">
+        <app-match [match]="match" (winnerSelected)="updateWinner(i, $event)"></app-match>
+    </div>
+</div>
+{{matchs | json}}
+
+

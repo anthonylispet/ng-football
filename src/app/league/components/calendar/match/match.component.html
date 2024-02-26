@@ -1,0 +1,24 @@
+<div class="container">
+    <div class="card">
+        <div class="card-body">
+            <div class="row">
+                <div class="col">
+                    <h6>{{ getPlayerName(match.team1.player) }}</h6>
+                    <p>{{match.team1.name}}</p>
+                </div>
+                <div class="col">
+                    <h6>{{ getPlayerName(match.team2.player) }}</h6>
+                    <p>{{match.team2.name}}</p>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="winnerSelect">Sélectionner le gagnant</label>
+                <select class="form-control" id="winnerSelect" (change)="selectWinner($event)">
+                    <option value=""></option>
+                    <option value="{{match.team1.id}}">{{match.team1.name}}</option>
+                    <option value="{{match.team2.id}}">{{match.team2.name}}</option>
+                </select>
+            </div>
+        </div>
+    </div>
+</div>
