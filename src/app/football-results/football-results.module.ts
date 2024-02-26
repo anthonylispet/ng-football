@@ -20,6 +20,7 @@ import { BarakiRandomComponent } from './pages/baraki-random/baraki-random.compo
     FixturesComponent,
     ErrorComponent,
     BarakiRandomComponent
+
   ],
   imports: [
     CommonModule,
