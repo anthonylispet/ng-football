@@ -1,0 +1,47 @@
+/* Style du tableau */
+.table-container {
+  width: 100%;
+  overflow-x: auto; /* Permet le défilement horizontal si nécessaire */
+}
+
+.container{
+  max-width:400px;
+}
+/* Style de l'en-tête du tableau */
+.table-header {
+  display: flex;
+  background-color: #f2f2f2;
+  font-weight: bold;
+}
+
+/* Style des lignes du tableau */
+.table-row {
+  display: flex;
+  border-bottom: 1px solid #ddd;
+}
+
+/* Style des cellules du tableau */
+.table-row > div, .table-header > div {
+  flex: 1; /* Répartit l'espace équitablement entre les cellules */
+  padding: 6px;
+  box-sizing: border-box; /* Inclut les bordures et le padding dans la largeur */
+  text-align: center; /* Alignement du texte au centre */
+}
+
+/* Style de la ligne impaire pour un aspect zébré */
+.table-row:nth-child(odd) {
+  background-color: #f9f9f9;
+}
+
+/* Style de l'élément vide */
+.empty-message {
+  padding: 10px;
+}
+
+.mainDiv{
+  display: flex;
+  height: calc(100vh - 105px);
+  overflow-y: auto;
+  flex-direction: column;
+  align-items: center;
+}

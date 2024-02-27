@@ -1,1 +1,20 @@
-<p>classement works!</p>
+<div *ngIf="currentClassement | async as classements; else empty" class="mainDiv">
+  <div class="container mt-5">
+    <div class="table-container">
+      <div class="table-header">
+        <div style="max-width:40px !important">#</div>
+        <div style="width:100px !important">Deck</div>
+        <div style="max-width:40px !important">P</div>
+        <div style="max-width:40px !important">V</div>
+      </div>
+      <div *ngFor="let classement of classements; let i = index" class="table-row">
+        <div style="max-width:40px !important"> {{i+1}}</div>
+        <div style="width:100px !important;text-align: left !important;">{{classement.team.name}}</div>
+        <div style="max-width:40px !important">{{classement.nbPlayed}}</div>
+        <div style="max-width:40px !important">{{classement.nbVictory}}</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<ng-template #empty></ng-template>

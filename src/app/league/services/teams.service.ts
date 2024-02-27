@@ -15,11 +15,7 @@ export class TeamsService {
 
   constructor(private db: AngularFireDatabase) {}
 
-  getTeams(): Observable<any> {
-    return this.db.object('/teams').valueChanges();
+  getTeams(): Observable<Team[]> {
+    return this.db.object('/teams').valueChanges() as Observable<Team[]>;
   }
-
-  /*getTeams(): any{
-    //return this.http.get<Team[]>('assets/teams.json');
-  }*/
 }

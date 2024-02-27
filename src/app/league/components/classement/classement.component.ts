@@ -1,6 +1,7 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
-import {AngularFireDatabase} from "@angular/fire/compat/database";
-import {Subject} from "rxjs";
+import {Observable, Subject, takeUntil} from "rxjs";
+import {ClassementService} from "../../services/classement.service";
+import {Classement} from "../../models/classement";
 
 @Component({
   selector: 'app-classement',
@@ -11,10 +12,17 @@ export class ClassementComponent implements OnInit,OnDestroy{
 
   private destroyed$: Subject<boolean> = new Subject();
 
-  constructor(private db:AngularFireDatabase){}
+  constructor(private classementService: ClassementService){}
 
   ngOnInit(): void {
+    this.classementService.getClassement().pipe(takeUntil(this.destroyed$)).subscribe((classement) => {
+      console.log('Classement:', classement);
+      this.classementService.setCurrentClassement(classement);
+    });
+  }
 
+  get currentClassement(): Observable<Classement[] | null>{
+    return this.classementService.currentClassement$;
   }
 
   ngOnDestroy(): void {

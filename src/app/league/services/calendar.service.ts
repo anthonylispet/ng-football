@@ -12,8 +12,8 @@ export class CalendarService {
 
   constructor(private http: HttpClient,private db: AngularFireDatabase) { }
 
-  getMatchs(): Observable<any> {
-    return this.db.object('/matchs').valueChanges();
+  getMatchs(): Observable<Match[]> {
+    return this.db.object('/matchs').valueChanges() as Observable<Match[]>;
   }
 
   /*updateMatches(matchs: Match[]): Observable<any> {
