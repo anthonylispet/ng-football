@@ -14,9 +14,9 @@
             <div class="form-group">
                 <label for="winnerSelect">Sélectionner le gagnant</label>
                 <select class="form-control" id="winnerSelect" (change)="selectWinner($event)">
-                    <option value=""></option>
-                    <option value="{{match.team1.id}}">{{match.team1.name}}</option>
-                    <option value="{{match.team2.id}}">{{match.team2.name}}</option>
+                    <option value="" [selected]="match.winner === undefined"></option>
+                    <option value="{{match.team1.id}}" [selected]="match.winner?.id === match.team1.id">{{match.team1.name}}</option>
+                    <option value="{{match.team2.id}}" [selected]="match.winner?.id === match.team2.id">{{match.team2.name}}</option>
                 </select>
             </div>
         </div>

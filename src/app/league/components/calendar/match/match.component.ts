@@ -10,11 +10,15 @@ import {Player, Team} from "../../../models/teams";
 export class MatchComponent {
 
   @Input() match!:Match;
-  @Output() winnerSelected = new EventEmitter<Team>();
+  @Output() winnerSelected = new EventEmitter<Team|string>();
 
   selectWinner(event: any): void {
     const winnerId = event.target.value;
-    const winner = winnerId == this.match?.team1.id ? this.match?.team1 : this.match?.team2;
+    let winner = "";
+    if (winnerId !== ""){
+      // @ts-ignore
+      winner = winnerId == this.match?.team1.id ? this.match?.team1 : this.match?.team2;
+    }
     this.winnerSelected.emit(winner);
   }
 

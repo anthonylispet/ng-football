@@ -23,18 +23,16 @@ export class CalendarComponent implements OnInit,OnDestroy {
   constructor(private teamsService:TeamsService,private calendarService: CalendarService,private fb: FormBuilder){}
 
   ngOnInit(): void {
-    this.calendarService.getMatchs().subscribe(matchs => {
+    this.calendarService.getMatchs().pipe(takeUntil(this.destroyed$)).subscribe(matchs => {
       this.matchs = matchs;
     });
- /* this.calendarService.getMatchs().pipe(takeUntil(this.destroyed$)).subscribe(matchs => {
-
-    });*/
   }
 
-  updateWinner(matchIndex: number, winner: Team): void {
+  updateWinner(matchIndex: number, winner: any): void {
+    console.log(winner)
     this.matchs[matchIndex].winner = winner;
 
-    //this.calendarService.updateMatches(this.matchs);
+    this.calendarService.updateMatches(this.matchs);
   }
 
   ngOnDestroy(): void {
