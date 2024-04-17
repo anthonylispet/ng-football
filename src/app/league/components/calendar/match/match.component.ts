@@ -26,4 +26,7 @@ export class MatchComponent {
     // @ts-ignore
     return Player[player];
   }
+
+
+  protected readonly Player = Player;
 }

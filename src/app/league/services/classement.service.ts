@@ -35,7 +35,15 @@ export class ClassementService {
                 nbVictory: nbVictory
               });
             });
-            classement.sort((a,b)=> b.nbVictory - a.nbVictory);
+            classement.sort((a,b)=> {
+
+              // Si le nombre de victoires est différent, trier par le nombre de victoires
+              if (a.nbVictory !== b.nbVictory) {
+                return b.nbVictory - a.nbVictory;
+              }
+              // Si le nombre de victoires est le même, trier par le nombre de matchs joués
+              return b.nbPlayed - a.nbPlayed;
+            });
             return classement;
           })
         );

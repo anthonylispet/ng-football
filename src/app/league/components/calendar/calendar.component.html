@@ -1,7 +1,7 @@
 
 <div class="mainDiv">
-    <div *ngFor="let match of matchs; let i = index">
-        <app-match [match]="match" (winnerSelected)="updateWinner(i, $event)"></app-match>
+    <div *ngFor="let match of matchs; let i = index" class="match" [class.has-winner]="!!match.winner" #matches>
+        <app-match [match]="match" (winnerSelected)="updateWinner(i, $event)" ></app-match>
     </div>
 </div>
 
