@@ -59,9 +59,9 @@ export class CalendarService {
       let nbSeries = (aTeams.length)
       let cpt = 0;
 
-      for (let i = 1 ; i< nbSeries ; i++){
+      for (let i = 1 ; i<= nbSeries ; i++){
         cpt=(i-1);
-        for (let j =0 ; j < (aTeams.length-1); j++ ){
+        for (let j =0 ; j < (aTeams.length); j++ ){
 
           console.log((((i-1)*aTeams.length)+j+1)+' - '+j+' - '+cpt);
 
@@ -75,7 +75,7 @@ export class CalendarService {
           calendar.push(match);
 
           cpt++;
-          cpt = cpt >= (aTeams.length-1) ? 0 : cpt;
+          cpt = cpt >= (aTeams.length) ? 0 : cpt;
         }
 
       }
