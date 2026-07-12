@@ -4,6 +4,7 @@ import {ClassementService} from "../../services/classement.service";
 import {Classement} from "../../models/classement";
 
 @Component({
+  standalone: false,
   selector: 'app-classement',
   templateUrl: './classement.component.html',
   styleUrls: ['./classement.component.scss']

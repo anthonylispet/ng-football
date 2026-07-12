@@ -3,6 +3,7 @@ import {Match} from "../../../models/match";
 import {Player, Team} from "../../../models/teams";
 
 @Component({
+  standalone: false,
   selector: 'app-match',
   templateUrl: './match.component.html',
   styleUrls: ['./match.component.scss']

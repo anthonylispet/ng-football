@@ -5,6 +5,7 @@ import {Fixture} from "../../models/class/fixture";
 import {Subject, takeUntil} from "rxjs";
 
 @Component({
+  standalone: false,
   selector: 'app-fixtures',
   templateUrl: './fixtures.component.html',
   styleUrls: ['./fixtures.component.scss']

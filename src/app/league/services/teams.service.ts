@@ -1,9 +1,8 @@
 import { Injectable } from '@angular/core';
-import {HttpClient} from "@angular/common/http";
-import {catchError, Observable, of} from "rxjs";
+import { Observable } from 'rxjs';
 import {Team} from "../models/teams";
-import {AngularFireDatabase} from "@angular/fire/compat/database";
-import {initializeApp} from "@angular/fire/app";
+import { onValue, ref } from 'firebase/database';
+import { firebaseDatabase } from '../../firebase';
 
 
 
@@ -12,11 +11,14 @@ import {initializeApp} from "@angular/fire/app";
 })
 export class TeamsService {
 
-  private jsonUrl = "assets/teams.json"
-  constructor(private http: HttpClient,private db: AngularFireDatabase) {}
-
   getTeams(): Observable<Team[]> {
-    return this.db.object('/teams').valueChanges() as Observable<Team[]>;
+    return new Observable<Team[]>(subscriber =>
+      onValue(
+        ref(firebaseDatabase, 'teams'),
+        snapshot => subscriber.next(snapshot.val() ?? []),
+        error => subscriber.error(error)
+      )
+    );
   }
 
   /*resetTeams(){

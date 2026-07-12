@@ -3,6 +3,7 @@ import {TeamsService} from "../../services/teams.service";
 import {CalendarService} from "../../services/calendar.service";
 
 @Component({
+  standalone: false,
   selector: 'app-league',
   templateUrl: './league.component.html',
   styleUrls: ['./league.component.scss']

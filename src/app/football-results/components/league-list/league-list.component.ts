@@ -4,6 +4,7 @@ import {LeagueService} from "../../services/league.service";
 import { Subject, takeUntil} from "rxjs";
 
 @Component({
+  standalone: false,
   selector: 'app-league-list',
   templateUrl: './league-list.component.html',
   styleUrls: ['./league-list.component.scss']

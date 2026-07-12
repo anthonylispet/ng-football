@@ -4,7 +4,6 @@ import { LeagueComponent } from './pages/league/league.component';
 import {LeagueRoutingModule} from "./league-routing.module";
 import { CalendarComponent } from './components/calendar/calendar.component';
 import { ClassementComponent } from './components/classement/classement.component';
-import {HttpClientModule} from "@angular/common/http";
 import { MatchComponent } from './components/calendar/match/match.component';
 import {ReactiveFormsModule} from "@angular/forms";
 
@@ -18,7 +17,6 @@ import {ReactiveFormsModule} from "@angular/forms";
     MatchComponent
   ],
     imports: [
-        HttpClientModule,
         CommonModule,
         LeagueRoutingModule,
         ReactiveFormsModule

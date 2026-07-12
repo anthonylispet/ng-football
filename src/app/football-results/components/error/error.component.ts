@@ -3,6 +3,7 @@ import {Observable} from "rxjs";
 import {ErrorService} from "../../services/error.service";
 
 @Component({
+  standalone: false,
   selector: 'app-error',
   templateUrl: './error.component.html',
   styleUrls: ['./error.component.scss']

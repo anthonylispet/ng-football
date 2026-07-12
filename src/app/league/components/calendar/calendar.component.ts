@@ -1,4 +1,4 @@
-import {AfterViewInit, Component, ElementRef, OnDestroy, OnInit, QueryList, ViewChildren} from '@angular/core';
+import {AfterViewInit, ChangeDetectorRef, Component, ElementRef, OnDestroy, OnInit, QueryList, ViewChildren} from '@angular/core';
 import {Subject, takeUntil} from "rxjs";
 import {Match} from "../../models/match";
 import {CalendarService} from "../../services/calendar.service";
@@ -6,6 +6,7 @@ import {MatchComponent} from "./match/match.component";
 
 
 @Component({
+  standalone: false,
   selector: 'app-calendar',
   templateUrl: './calendar.component.html',
   styleUrls: ['./calendar.component.scss']
@@ -16,11 +17,16 @@ export class CalendarComponent implements OnInit,OnDestroy,AfterViewInit {
   matchs: Match[]=[];
 
   private destroyed$: Subject<boolean> = new Subject();
-  constructor(private calendarService: CalendarService,private elementRef: ElementRef){}
+  constructor(
+    private calendarService: CalendarService,
+    private elementRef: ElementRef,
+    private changeDetectorRef: ChangeDetectorRef
+  ){}
 
   ngOnInit(): void {
     this.calendarService.getMatchs().pipe(takeUntil(this.destroyed$)).subscribe(matchs => {
       this.matchs = matchs;
+      this.changeDetectorRef.markForCheck();
     });
 
   }

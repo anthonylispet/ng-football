@@ -2,6 +2,7 @@ import {Component, OnInit} from '@angular/core';
 import {SentenceService} from "../../services/sentence.service";
 
 @Component({
+  standalone: false,
   selector: 'app-baraki-random',
   templateUrl: './baraki-random.component.html',
   styleUrls: ['./baraki-random.component.scss']

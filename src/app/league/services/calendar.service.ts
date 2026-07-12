@@ -1,11 +1,9 @@
 import { Injectable } from '@angular/core';
 import {Match} from "../models/match";
-import {BehaviorSubject, catchError, Observable, of, Subject, takeUntil} from "rxjs";
-import {HttpClient} from "@angular/common/http";
-import {Standing} from "../../football-results/models/class/standing";
-import {AngularFireDatabase} from "@angular/fire/compat/database";
+import { Observable, Subject, takeUntil } from 'rxjs';
+import { onValue, ref, set } from 'firebase/database';
 import {TeamsService} from "./teams.service";
-import {Player} from "../models/teams";
+import { firebaseDatabase } from '../../firebase';
 
 @Injectable({
   providedIn: 'root'
@@ -14,10 +12,16 @@ export class CalendarService {
 
   private destroy$ = new Subject<void>();
 
-  constructor(private http: HttpClient,private db: AngularFireDatabase,private teamsService: TeamsService) { }
+  constructor(private teamsService: TeamsService) { }
 
   getMatchs(): Observable<Match[]> {
-    return this.db.object('/matchs').valueChanges() as Observable<Match[]>;
+    return new Observable<Match[]>(subscriber =>
+      onValue(
+        ref(firebaseDatabase, 'matchs'),
+        snapshot => subscriber.next(snapshot.val() ?? []),
+        error => subscriber.error(error)
+      )
+    );
   }
 
   /*updateMatches(matchs: Match[]): Observable<any> {
@@ -29,10 +33,10 @@ export class CalendarService {
 
   updateMatches(matchs: Match[]) {
   // Référence à la collection
-    const reference = this.db.object("/matchs");
+    const reference = ref(firebaseDatabase, 'matchs');
 
     // Mettre à jour les données avec le nouveau JSON
-    reference.set(matchs)
+    set(reference, matchs)
       .then(() => {
         console.log("Données mises à jour avec succès !");
       })
@@ -40,15 +44,6 @@ export class CalendarService {
         console.error("Erreur lors de la mise à jour des données : ", error);
       });
 }
-
-  // Gestion des erreurs
-  private handleError<T>(operation = 'operation', result?: T) {
-    return (error: any): Observable<T> => {
-      console.error(`${operation} failed: ${error.message}`);
-      return of(result as T);
-    };
-  }
-
 
   resetCalendar(){
     this.teamsService.getTeams().pipe(takeUntil(this.destroy$)).subscribe(teams=>{
@@ -85,8 +80,8 @@ export class CalendarService {
         return match.matchId - match2.matchId
       });
 
-      const reference = this.db.object("/matchs");
-      reference.set(calendar)
+      const reference = ref(firebaseDatabase, 'matchs');
+      set(reference, calendar)
         .then(() => {
           console.log("Données mises à jour avec succès !");
         })

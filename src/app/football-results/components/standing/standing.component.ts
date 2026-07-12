@@ -5,6 +5,7 @@ import {StandingsService} from "../../services/standings.service";
 import {Standing} from "../../models/class/standing";
 
 @Component({
+  standalone: false,
   selector: 'app-standing',
   templateUrl: './standing.component.html',
   styleUrls: ['./standing.component.scss']
