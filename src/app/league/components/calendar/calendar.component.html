@@ -1,8 +1,27 @@
-
-<div class="mainDiv">
-    <div *ngFor="let match of matchs; let i = index" class="match" [class.has-winner]="!!match.winner" #matches>
-        <app-match [match]="match" (winnerSelected)="updateWinner(i, $event)" ></app-match>
+<section class="page-shell">
+  <header class="page-heading">
+    <div>
+      <p class="eyebrow">Saison Commander</p>
+      <h1>Chronique des parties</h1>
+      <p class="description">Consignez l’issue de chaque affrontement entre vos decks.</p>
     </div>
-</div>
+    <div class="season-progress">
+      <strong>{{ completedGames }}</strong>
+      <span>sur {{ matchs.length }} parties résolues</span>
+    </div>
+  </header>
 
-
+  @if (matchs.length) {
+    <div class="games-list">
+      <div *ngFor="let match of matchs; let i = index" class="game" [class.has-winner]="!!match.winner" #matches>
+        <app-match [match]="match" (winnerSelected)="updateWinner(i, $event)"></app-match>
+      </div>
+    </div>
+  } @else {
+    <div class="empty-state">
+      <span aria-hidden="true">✦</span>
+      <h2>Le grimoire est encore vierge</h2>
+      <p>Aucune partie Commander n’a été préparée pour cette saison.</p>
+    </div>
+  }
+</section>

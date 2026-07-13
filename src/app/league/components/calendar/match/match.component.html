@@ -1,24 +1,32 @@
-<div class="container">
-  <div class="card">
-    <div class="card-body">
-      <div class="row">
-        <div class="col-sm-12 col-md-6">
-          <h6>{{ getPlayerName(match.team1.player) }}</h6>
-          <p>{{ match.team1.name }}</p>
-        </div>
-        <div class="col-sm-12 col-md-6">
-          <h6>{{ getPlayerName(match.team2.player) }}</h6>
-          <p>{{ match.team2.name }}</p>
-        </div>
-      </div>
-      <div class="form-group">
-        <label for="winnerSelect">Sélectionner le gagnant</label>
-        <select class="form-control " id="winnerSelect" (change)="selectWinner($event)" [ngClass]="{'red-border': match.winner?.id === match.team1.id, 'blue-border': match.winner?.id === match.team2.id}">
-          <option value="" [selected]="match.winner === undefined"></option>
-          <option value="{{ match.team1.id }}" [selected]="match.winner?.id === match.team1.id">{{ match.team1.name }}</option>
-          <option value="{{ match.team2.id }}" [selected]="match.winner?.id === match.team2.id">{{ match.team2.name }}</option>
-        </select>
-      </div>
+<article class="game-card">
+  <div class="game-number">Partie {{ match.matchId + 1 }}</div>
+
+  <div class="decks">
+    <div class="deck" [class.winner]="match.winner?.id === match.team1.id">
+      <span class="owner">{{ getPlayerName(match.team1.player) }}</span>
+      <strong>{{ match.team1.name }}</strong>
+      <small>Deck Commander</small>
+    </div>
+
+    <span class="versus" aria-label="contre">VS</span>
+
+    <div class="deck deck-right" [class.winner]="match.winner?.id === match.team2.id">
+      <span class="owner">{{ getPlayerName(match.team2.player) }}</span>
+      <strong>{{ match.team2.name }}</strong>
+      <small>Deck Commander</small>
     </div>
   </div>
-</div>
+
+  <div class="outcome">
+    <label [for]="'winner-' + match.matchId">Deck victorieux</label>
+    <select
+      [id]="'winner-' + match.matchId"
+      (change)="selectWinner($event)"
+      [class.has-result]="!!match.winner"
+    >
+      <option value="" [selected]="match.winner === undefined">Issue à déterminer</option>
+      <option [value]="match.team1.id" [selected]="match.winner?.id === match.team1.id">{{ match.team1.name }}</option>
+      <option [value]="match.team2.id" [selected]="match.winner?.id === match.team2.id">{{ match.team2.name }}</option>
+    </select>
+  </div>
+</article>

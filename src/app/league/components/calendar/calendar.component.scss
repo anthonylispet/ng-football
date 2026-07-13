@@ -1,8 +1,108 @@
-.mainDiv{
-  display: flex;
-  height: calc(100vh - 105px);
-  overflow-y: auto;
-  flex-direction: column;
-  align-items: center;
+.page-shell {
+  width: min(1040px, calc(100% - 36px));
+  margin: 0 auto;
+  padding: 50px 0 70px;
 }
 
+.page-heading {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 24px;
+  margin-bottom: 32px;
+  padding-bottom: 24px;
+  border-bottom: 1px solid #d7d0bf;
+}
+
+.eyebrow {
+  margin: 0 0 8px;
+  color: #88703d;
+  font-size: .68rem;
+  font-weight: 800;
+  letter-spacing: .2em;
+  text-transform: uppercase;
+}
+
+h1 {
+  margin: 0;
+  color: #1d2620;
+  font-family: Georgia, serif;
+  font-size: clamp(2.2rem, 5vw, 3.7rem);
+  font-weight: 500;
+  letter-spacing: -.04em;
+}
+
+.description {
+  margin: 11px 0 0;
+  color: #737a73;
+}
+
+.season-progress {
+  display: flex;
+  min-width: 160px;
+  align-items: baseline;
+  justify-content: flex-end;
+  gap: 8px;
+  color: #737a73;
+  font-size: .76rem;
+}
+
+.season-progress strong {
+  color: #1f5c3a;
+  font-family: Georgia, serif;
+  font-size: 2rem;
+  font-weight: 500;
+}
+
+.games-list {
+  display: grid;
+  gap: 15px;
+}
+
+.game {
+  opacity: .88;
+  transition: opacity .2s, transform .2s;
+}
+
+.game:hover,
+.game.has-winner {
+  opacity: 1;
+}
+
+.game:hover {
+  transform: translateY(-1px);
+}
+
+.empty-state {
+  padding: 80px 20px;
+  color: #72766f;
+  text-align: center;
+}
+
+.empty-state span {
+  color: #b39043;
+  font-size: 2rem;
+}
+
+.empty-state h2 {
+  margin: 14px 0 7px;
+  color: #29332c;
+  font-family: Georgia, serif;
+  font-weight: 500;
+}
+
+@media (max-width: 650px) {
+  .page-shell {
+    width: min(100% - 24px, 1040px);
+    padding-top: 30px;
+  }
+
+  .page-heading {
+    display: block;
+  }
+
+  .season-progress {
+    justify-content: flex-start;
+    margin-top: 16px;
+  }
+}

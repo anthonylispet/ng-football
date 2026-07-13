@@ -2,6 +2,7 @@ import {Component, OnDestroy, OnInit} from '@angular/core';
 import {Observable, Subject, takeUntil} from "rxjs";
 import {ClassementService} from "../../services/classement.service";
 import {Classement} from "../../models/classement";
+import {Player} from "../../models/teams";
 
 @Component({
   standalone: false,
@@ -24,6 +25,10 @@ export class ClassementComponent implements OnInit,OnDestroy{
 
   get currentClassement(): Observable<Classement[] | null>{
     return this.classementService.currentClassement$;
+  }
+
+  getPlayerName(player: Player): string {
+    return Player[player];
   }
 
   ngOnDestroy(): void {

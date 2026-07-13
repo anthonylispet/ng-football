@@ -16,6 +16,10 @@ export class CalendarComponent implements OnInit,OnDestroy,AfterViewInit {
 
   matchs: Match[]=[];
 
+  get completedGames(): number {
+    return this.matchs.filter(match => match.winner !== undefined).length;
+  }
+
   private destroyed$: Subject<boolean> = new Subject();
   constructor(
     private calendarService: CalendarService,

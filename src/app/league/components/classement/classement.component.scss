@@ -1,47 +1,125 @@
-/* Style du tableau */
-.table-container {
-  width: 100%;
-  overflow-x: auto; /* Permet le défilement horizontal si nécessaire */
+.page-shell {
+  width: min(960px, calc(100% - 36px));
+  margin: 0 auto;
+  padding: 50px 0 70px;
 }
 
-.container{
-  max-width:400px;
-}
-/* Style de l'en-tête du tableau */
-.table-header {
-  display: flex;
-  background-color: #f2f2f2;
-  font-weight: bold;
+.page-heading {
+  margin-bottom: 32px;
+  padding-bottom: 24px;
+  border-bottom: 1px solid #d7d0bf;
 }
 
-/* Style des lignes du tableau */
-.table-row {
-  display: flex;
-  border-bottom: 1px solid #ddd;
+.eyebrow {
+  margin: 0 0 8px;
+  color: #88703d;
+  font-size: .68rem;
+  font-weight: 800;
+  letter-spacing: .2em;
+  text-transform: uppercase;
 }
 
-/* Style des cellules du tableau */
-.table-row > div, .table-header > div {
-  flex: 1; /* Répartit l'espace équitablement entre les cellules */
-  padding: 6px;
-  box-sizing: border-box; /* Inclut les bordures et le padding dans la largeur */
-  text-align: center; /* Alignement du texte au centre */
+h1 {
+  margin: 0;
+  color: #1d2620;
+  font-family: Georgia, serif;
+  font-size: clamp(2.2rem, 5vw, 3.7rem);
+  font-weight: 500;
+  letter-spacing: -.04em;
 }
 
-/* Style de la ligne impaire pour un aspect zébré */
-.table-row:nth-child(odd) {
-  background-color: #f9f9f9;
+.page-heading > p:last-child {
+  margin: 11px 0 0;
+  color: #737a73;
 }
 
-/* Style de l'élément vide */
-.empty-message {
-  padding: 10px;
+.ranking-card {
+  overflow: hidden;
+  border: 1px solid #d9d3c5;
+  border-radius: 14px;
+  background: #fbfaf6;
+  box-shadow: 0 8px 30px rgba(29, 38, 32, .06);
 }
 
-.mainDiv{
-  display: flex;
-  height: calc(100vh - 105px);
-  overflow-y: auto;
-  flex-direction: column;
+.table-grid {
+  display: grid;
+  grid-template-columns: 70px minmax(180px, 1fr) 130px 100px 100px;
   align-items: center;
+  gap: 12px;
+  padding: 0 24px;
+}
+
+.table-header {
+  min-height: 48px;
+  color: #aaa596;
+  font-size: .64rem;
+  font-weight: 800;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  background: #202a23;
+}
+
+.table-row {
+  min-height: 67px;
+  border-bottom: 1px solid #e5e0d5;
+  color: #6d736e;
+  font-size: .84rem;
+}
+
+.table-row:last-child {
+  border-bottom: 0;
+}
+
+.table-row.podium {
+  background: linear-gradient(90deg, rgba(214, 188, 119, .12), transparent 55%);
+}
+
+.table-row strong {
+  color: #29312c;
+  font-family: Georgia, serif;
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+.rank {
+  color: #8a7a57;
+  font-family: Georgia, serif;
+  font-size: 1rem;
+}
+
+.crown {
+  margin-right: 5px;
+  color: #bb963e;
+}
+
+.wins {
+  display: grid;
+  width: 34px;
+  height: 34px;
+  place-items: center;
+  border-radius: 50%;
+  color: #fff;
+  font-weight: 800;
+  background: #2e6846;
+}
+
+.empty-ranking {
+  padding: 70px 20px;
+  color: #777b75;
+  text-align: center;
+}
+
+@media (max-width: 650px) {
+  .page-shell {
+    width: min(100% - 24px, 960px);
+    padding-top: 30px;
+  }
+
+  .ranking-card {
+    overflow-x: auto;
+  }
+
+  .table-grid {
+    min-width: 690px;
+  }
 }

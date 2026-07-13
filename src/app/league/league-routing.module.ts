@@ -6,7 +6,9 @@ import {ClassementComponent} from "./components/classement/classement.component"
 
 const routes: Routes = [
   { path: '', component:LeagueComponent , children: [
-      { path: 'calendar', component:CalendarComponent },
+      { path: '', redirectTo: 'parties', pathMatch: 'full' },
+      { path: 'parties', component:CalendarComponent },
+      { path: 'calendar', redirectTo: 'parties' },
       { path: 'classement', component:ClassementComponent },
     ]},
   { path: '**', redirectTo :'/' }

@@ -1,0 +1,6 @@
+{
+  "rules": {
+    ".read": "auth != null && auth.token.email_verified == true && (auth.token.email == 'anthony.lispet@gmail.com' || auth.token.email == 'pierre.simon@gmail.com')",
+    ".write": "auth != null && auth.token.email_verified == true && (auth.token.email == 'anthony.lispet@gmail.com' || auth.token.email == 'pierre.simon@gmail.com')"
+  }
+}
