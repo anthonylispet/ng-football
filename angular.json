@@ -50,6 +50,13 @@
               ],
               "outputHashing": "all"
             },
+            "github-pages": {
+              "baseHref": "/ng-football/",
+              "outputPath": {
+                "base": "docs",
+                "browser": ""
+              }
+            },
             "development": {
               "optimization": false,
               "extractLicenses": false,

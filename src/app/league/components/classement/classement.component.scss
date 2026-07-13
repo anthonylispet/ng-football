@@ -2,7 +2,7 @@
 .page-shell { width: min(1120px, calc(100% - 40px)); margin: 0 auto; padding: 44px 0 76px; }
 
 .page-heading { position: relative; display: flex; min-height: 220px; align-items: center; justify-content: space-between; gap: 30px; margin-bottom: 42px; padding: 38px clamp(28px, 5vw, 64px); overflow: hidden; border: 1px solid #ffffff14; border-radius: 20px; color: #eee9dc; background: radial-gradient(circle at 78% 25%, #6f392f66, transparent 28%), linear-gradient(135deg, #111a15, #19231d 58%, #281a18); box-shadow: 0 22px 55px #19241c26; }
-.page-heading::after { position: absolute; right: -38px; bottom: -65px; width: 260px; height: 260px; opacity: .055; background: url('/assets/mana/R.svg') center / contain no-repeat; content: ''; transform: rotate(16deg); }
+.page-heading::after { position: absolute; right: -38px; bottom: -65px; width: 260px; height: 260px; opacity: .055; background: url('../../../../assets/mana/R.svg') center / contain no-repeat; content: ''; transform: rotate(16deg); }
 .page-heading > div { position: relative; z-index: 1; }
 .eyebrow { margin: 0 0 9px; color: #b49851; font-size: .63rem; font-weight: 900; letter-spacing: .21em; text-transform: uppercase; }
 .page-heading .eyebrow { color: #d0b668; }
@@ -20,7 +20,7 @@ h1 { margin: 0; font-family: Georgia, serif; font-size: clamp(3rem, 6vw, 5.2rem)
 
 .podium-grid { display: grid; grid-template-columns: 1.15fr 1fr 1fr; gap: 14px; }
 .podium-card { position: relative; display: grid; min-height: 145px; grid-template-columns: 44px 1fr auto; align-items: center; gap: 13px; padding: 21px; overflow: hidden; border: 1px solid #d7d1c4; border-radius: 16px; background: rgba(251, 250, 246, .92); box-shadow: 0 10px 28px #2531270c; }
-.podium-card::after { position: absolute; right: -36px; bottom: -48px; width: 110px; height: 110px; opacity: .035; background: url('/assets/mana/W.svg') center / contain no-repeat; content: ''; transform: rotate(12deg); }
+.podium-card::after { position: absolute; right: -36px; bottom: -48px; width: 110px; height: 110px; opacity: .035; background: url('../../../../assets/mana/W.svg') center / contain no-repeat; content: ''; transform: rotate(12deg); }
 .podium-card.champion { border-color: #bfa65f; color: #f0eadb; background: radial-gradient(circle at 90% 20%, #745c2c45, transparent 35%), linear-gradient(135deg, #17251d, #111713); box-shadow: 0 17px 38px #1b2d2124; }
 .rank-medallion { display: grid; width: 43px; height: 43px; place-items: center; border: 1px solid #b39a5b; border-radius: 50%; color: #92763c; font-family: Georgia, serif; font-size: 1.05rem; background: #f1ead9; }
 .champion .rank-medallion { color: #f0d589; background: #2c311f; box-shadow: 0 0 20px #d7b95926; }
