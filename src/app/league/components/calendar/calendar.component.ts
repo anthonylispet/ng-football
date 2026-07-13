@@ -19,6 +19,7 @@ export class CalendarComponent implements OnInit, OnDestroy {
   matches: Match[] = [];
   league: League | null = null;
   filter: MatchFilter = 'all';
+  searchTerm = '';
   loading = true;
   loadError = '';
   saveError = '';
@@ -50,19 +51,33 @@ export class CalendarComponent implements OnInit, OnDestroy {
   }
 
   get filteredMatches(): Match[] {
+    let filteredMatches = this.matches;
+
     if (this.filter === 'pending') {
-      return this.matches.filter(match => match.winner === null);
+      filteredMatches = filteredMatches.filter(match => match.winner === null);
     }
 
     if (this.filter === 'completed') {
-      return this.matches.filter(match => match.winner !== null);
+      filteredMatches = filteredMatches.filter(match => match.winner !== null);
     }
 
-    return this.matches;
+    const query = this.normalizeSearchValue(this.searchTerm);
+    if (!query) {
+      return filteredMatches;
+    }
+
+    return filteredMatches.filter(match =>
+      this.normalizeSearchValue(match.team1.name).includes(query)
+      || this.normalizeSearchValue(match.team2.name).includes(query),
+    );
   }
 
   setFilter(filter: MatchFilter): void {
     this.filter = filter;
+  }
+
+  clearSearch(): void {
+    this.searchTerm = '';
   }
 
   isSaving(matchId: string): boolean {
@@ -136,5 +151,13 @@ export class CalendarComponent implements OnInit, OnDestroy {
         this.changeDetectorRef.markForCheck();
       },
     });
+  }
+
+  private normalizeSearchValue(value: string): string {
+    return value
+      .normalize('NFD')
+      .replace(/[\u0300-\u036f]/g, '')
+      .toLowerCase()
+      .trim();
   }
 }

@@ -33,7 +33,14 @@
         <button type="button" [class.active]="filter === 'pending'" (click)="setFilter('pending')">À jouer <span>{{ pendingGames }}</span></button>
         <button type="button" [class.active]="filter === 'completed'" (click)="setFilter('completed')">Terminées <span>{{ completedGames }}</span></button>
       </div>
-      <p><span aria-hidden="true">●</span> {{ league?.status === 'closed' ? 'Archive en lecture seule' : 'Sélectionnez directement le deck victorieux' }}</p>
+      <div class="search-field">
+        <span class="search-icon" aria-hidden="true"></span>
+        <label for="team-search">Rechercher une équipe</label>
+        <input id="team-search" type="search" [(ngModel)]="searchTerm" placeholder="Rechercher une équipe…" autocomplete="off">
+        @if (searchTerm) {
+          <button type="button" class="clear-search" aria-label="Effacer la recherche" (click)="clearSearch()">×</button>
+        }
+      </div>
     </div>
 
     @if (saveError) { <div class="save-error" role="alert">{{ saveError }}</div> }
@@ -45,7 +52,7 @@
         }
       </div>
     } @else {
-      <div class="status-card empty-filter"><img src="assets/mana/W.svg" alt="" aria-hidden="true"><div><strong>Aucune partie dans cette sélection</strong><p>Choisissez un autre filtre pour poursuivre la saison.</p></div></div>
+      <div class="status-card empty-filter"><img src="assets/mana/W.svg" alt="" aria-hidden="true"><div><strong>Aucune partie trouvée</strong><p>{{ searchTerm ? 'Essayez un autre nom d’équipe ou effacez la recherche.' : 'Choisissez un autre filtre pour poursuivre la saison.' }}</p></div></div>
     }
   } @else if (league?.status === 'draft') {
     <div class="status-card empty-state"><img src="assets/mana/U.svg" alt="" aria-hidden="true"><div><strong>La ligue se prépare</strong><p>Anthony et Pierre doivent choisir leurs decks avant de lancer le tournoi.</p></div><a routerLink="/ligues">Configurer la ligue</a></div>
