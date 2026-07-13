@@ -1,40 +1,75 @@
 import { Match } from '../models/match';
 import { Team } from '../models/teams';
 
+interface ScheduledPair {
+  team1: Team;
+  team2: Team;
+  randomOrder: number;
+}
+
 export function generateTournamentMatches(
   anthonyDecks: Team[],
   pierreDecks: Team[],
   random: () => number = Math.random,
 ): Match[] {
-  const anthony = shuffle(anthonyDecks, random);
-  const pierre = shuffle(pierreDecks, random);
-  const ordered: Array<{ team1: Team; team2: Team }> = [];
-  const shifts = Array.from({ length: pierre.length - 1 }, (_, index) => index + 1)
-    .filter(shift => greatestCommonDivisor(shift, pierre.length) === 1)
-    .filter(shift => shift !== (anthony.length - 1) % pierre.length);
+  const remaining: ScheduledPair[] = anthonyDecks.flatMap(team1 => pierreDecks.map(team2 => ({
+    team1,
+    team2,
+    randomOrder: random(),
+  })));
+  const ordered: ScheduledPair[] = [];
+  const anthonyLastPlayedAt = new Map<string, number>();
+  const pierreLastPlayedAt = new Map<string, number>();
+  const canAlternateAnthony = anthonyDecks.length > 1;
+  const canAlternatePierre = pierreDecks.length > 1;
 
-  if (anthony.length > 1 && pierre.length > 1 && shifts.length) {
-    const shift = shifts[Math.floor(random() * shifts.length)] ?? shifts[0];
-    for (let round = 0; round < pierre.length; round++) {
-      for (let index = 0; index < anthony.length; index++) {
-        ordered.push({
-          team1: anthony[index],
-          team2: pierre[(index + shift * round) % pierre.length],
-        });
-      }
+  const arrangeNextMatch = (allowImmediateRepeat: boolean): boolean => {
+    if (!remaining.length) return true;
+
+    const previous = ordered.at(-1);
+    const candidates = remaining.map((pair, index) => ({
+      pair,
+      index,
+      repeatPenalty: Number(canAlternateAnthony && pair.team1.id === previous?.team1.id)
+        + Number(canAlternatePierre && pair.team2.id === previous?.team2.id),
+      idleScore: (ordered.length - (anthonyLastPlayedAt.get(pair.team1.id) ?? -1))
+        + (ordered.length - (pierreLastPlayedAt.get(pair.team2.id) ?? -1)),
+      onwardOptions: remaining.filter(other =>
+        other !== pair
+        && (!canAlternateAnthony || other.team1.id !== pair.team1.id)
+        && (!canAlternatePierre || other.team2.id !== pair.team2.id),
+      ).length,
+    }))
+      .filter(candidate => allowImmediateRepeat || candidate.repeatPenalty === 0)
+      .sort((left, right) =>
+        left.repeatPenalty - right.repeatPenalty
+        || right.idleScore - left.idleScore
+        || left.onwardOptions - right.onwardOptions
+        || left.pair.randomOrder - right.pair.randomOrder,
+      );
+
+    for (const candidate of candidates) {
+      const [pair] = remaining.splice(candidate.index, 1);
+      const previousAnthonyPlay = anthonyLastPlayedAt.get(pair.team1.id);
+      const previousPierrePlay = pierreLastPlayedAt.get(pair.team2.id);
+
+      anthonyLastPlayedAt.set(pair.team1.id, ordered.length);
+      pierreLastPlayedAt.set(pair.team2.id, ordered.length);
+      ordered.push(pair);
+
+      if (arrangeNextMatch(allowImmediateRepeat)) return true;
+
+      ordered.pop();
+      remaining.splice(candidate.index, 0, pair);
+      restoreLastPlay(anthonyLastPlayedAt, pair.team1.id, previousAnthonyPlay);
+      restoreLastPlay(pierreLastPlayedAt, pair.team2.id, previousPierrePlay);
     }
-  } else {
-    const remaining = anthony.flatMap(team1 => pierre.map(team2 => ({ team1, team2 })));
-    while (remaining.length) {
-      const previous = ordered.at(-1);
-      const scored = remaining.map((pair, index) => ({
-        index,
-        penalty: (pair.team1.id === previous?.team1.id ? 1 : 0)
-          + (pair.team2.id === previous?.team2.id ? 1 : 0),
-        random: random(),
-      })).sort((left, right) => left.penalty - right.penalty || left.random - right.random);
-      ordered.push(remaining.splice(scored[0].index, 1)[0]);
-    }
+
+    return false;
+  };
+
+  if (!arrangeNextMatch(false) && !arrangeNextMatch(true)) {
+    throw new Error('Impossible de générer un calendrier sans répétition immédiate.');
   }
 
   return ordered.map((pair, order) => ({
@@ -46,16 +81,11 @@ export function generateTournamentMatches(
   }));
 }
 
-function shuffle<T>(values: T[], random: () => number): T[] {
-  const shuffled = [...values];
-  for (let index = shuffled.length - 1; index > 0; index--) {
-    const other = Math.floor(random() * (index + 1));
-    [shuffled[index], shuffled[other]] = [shuffled[other], shuffled[index]];
+function restoreLastPlay(lastPlayedAt: Map<string, number>, teamId: string, previousPlay: number | undefined): void {
+  if (previousPlay === undefined) {
+    lastPlayedAt.delete(teamId);
+    return;
   }
-  return shuffled;
-}
 
-function greatestCommonDivisor(left: number, right: number): number {
-  while (right) [left, right] = [right, left % right];
-  return Math.abs(left);
+  lastPlayedAt.set(teamId, previousPlay);
 }
