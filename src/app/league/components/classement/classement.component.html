@@ -9,6 +9,22 @@
   } @else if (loading) {
     <div class="ranking-loading" aria-label="Chargement du classement">@for (placeholder of [1,2,3,4,5]; track placeholder) { <span></span> }</div>
   } @else if (classement.length) {
+    <section class="players-section" aria-labelledby="players-title">
+      <div class="section-title players-title">
+        <div><p class="eyebrow">Le duel de la saison</p><h2 id="players-title">Victoires par joueur</h2></div>
+        <span>Tous les decks de la ligue</span>
+      </div>
+      <div class="players-scoreboard">
+        @for (player of playerScores; track player.code; let last = $last) {
+          <article class="player-score" [class.anthony]="player.code === 'A'" [class.pierre]="player.code === 'P'" [class.leading]="player.leading">
+            <div class="player-identity"><span aria-hidden="true">{{ player.name.charAt(0) }}</span><div><small>{{ player.leading ? 'En tête' : 'Joueur' }}</small><strong>{{ player.name }}</strong><p>{{ player.deckCount }} deck{{ player.deckCount > 1 ? 's' : '' }} engagé{{ player.deckCount > 1 ? 's' : '' }}</p></div></div>
+            <div class="player-victories"><strong>{{ player.victories }}</strong><span>partie{{ player.victories > 1 ? 's' : '' }} gagnée{{ player.victories > 1 ? 's' : '' }}</span></div>
+          </article>
+          @if (!last) { <div class="versus-divider" aria-hidden="true"><span>VS</span><small>{{ totalGamesPlayed }} jouée{{ totalGamesPlayed > 1 ? 's' : '' }}</small></div> }
+        }
+      </div>
+    </section>
+
     <section class="podium-section" aria-labelledby="podium-title">
       <div class="section-title"><div><p class="eyebrow">En tête de table</p><h2 id="podium-title">Le podium</h2></div><span>{{ league?.status === 'closed' ? 'Classement final' : 'Mis à jour en temps réel' }}</span></div>
       <div class="podium-grid">

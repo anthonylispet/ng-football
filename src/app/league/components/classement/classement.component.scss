@@ -18,6 +18,27 @@ h1 { margin: 0; font-family: Georgia, serif; font-size: clamp(3rem, 6vw, 5.2rem)
 .section-title > span { padding-bottom: 5px; color: #8a8e87; font-size: .65rem; }
 .section-title.compact { margin-top: 42px; }
 
+.players-section { margin-bottom: 42px; }
+.players-title { margin-bottom: 14px; }
+.players-scoreboard { display: grid; grid-template-columns: minmax(0, 1fr) 74px minmax(0, 1fr); align-items: stretch; overflow: hidden; border: 1px solid #d5cdbd; border-radius: 18px; background: #f9f6efeb; box-shadow: 0 15px 38px #2531270d; }
+.player-score { position: relative; display: flex; min-height: 136px; align-items: center; justify-content: space-between; gap: 20px; padding: 25px 28px; overflow: hidden; }
+.player-score::after { position: absolute; width: 150px; height: 150px; opacity: .035; background: center / contain no-repeat; content: ''; pointer-events: none; }
+.player-score.anthony::after { right: -38px; bottom: -62px; background-image: url('../../../../assets/mana/B.svg'); }
+.player-score.pierre::after { top: -58px; left: -35px; background-image: url('../../../../assets/mana/G.svg'); }
+.player-score.leading { background: linear-gradient(135deg, #b89a4d0d, #f5ecd377); }
+.player-identity { position: relative; z-index: 1; display: flex; align-items: center; gap: 14px; }
+.player-identity > span { display: grid; width: 47px; height: 47px; flex: 0 0 auto; place-items: center; border: 1px solid #af9551; border-radius: 50%; color: #dbc271; font-family: Georgia, serif; font-size: 1.2rem; background: #1a3023; box-shadow: 0 7px 16px #19312322; }
+.player-identity div { display: grid; gap: 2px; }
+.player-identity small { color: #9b8143; font-size: .53rem; font-weight: 900; letter-spacing: .13em; text-transform: uppercase; }
+.player-identity strong { color: #243028; font-family: Georgia, serif; font-size: 1.28rem; font-weight: 500; }
+.player-identity p { margin: 0; color: #92978f; font-size: .61rem; }
+.player-victories { position: relative; z-index: 1; display: grid; min-width: 86px; justify-items: center; }
+.player-victories strong { color: #306746; font-family: Georgia, serif; font-size: 2.65rem; font-weight: 400; line-height: .9; }
+.player-victories span { margin-top: 7px; color: #858c85; font-size: .55rem; font-weight: 800; text-transform: uppercase; }
+.versus-divider { display: grid; align-content: center; justify-items: center; gap: 6px; color: #9a895b; background: linear-gradient(#1a2b21, #142019); }
+.versus-divider span { display: grid; width: 36px; height: 36px; place-items: center; border: 1px solid #b99d50; border-radius: 50%; color: #e2cb82; font-family: Georgia, serif; font-size: .67rem; }
+.versus-divider small { color: #78857b; font-size: .48rem; text-transform: uppercase; }
+
 .podium-grid { display: grid; grid-template-columns: 1.15fr 1fr 1fr; gap: 14px; }
 .podium-card { position: relative; display: grid; min-height: 145px; grid-template-columns: 44px 1fr auto; align-items: center; gap: 13px; padding: 21px; overflow: hidden; border: 1px solid #d7d1c4; border-radius: 16px; background: rgba(251, 250, 246, .92); box-shadow: 0 10px 28px #2531270c; }
 .podium-card::after { position: absolute; right: -36px; bottom: -48px; width: 110px; height: 110px; opacity: .035; background: url('../../../../assets/mana/W.svg') center / contain no-repeat; content: ''; transform: rotate(12deg); }
@@ -58,6 +79,9 @@ h1 { margin: 0; font-family: Georgia, serif; font-size: clamp(3rem, 6vw, 5.2rem)
 @keyframes shimmer { to { background-position: -200% 0; } }
 
 @media (max-width: 900px) {
+  .players-scoreboard { grid-template-columns: 1fr; }
+  .versus-divider { min-height: 54px; grid-template-columns: auto auto; align-items: center; justify-content: center; }
+  .versus-divider span { width: 30px; height: 30px; }
   .podium-grid { grid-template-columns: 1fr; }
   .podium-card { min-height: 120px; }
   .ranking-card { overflow-x: auto; }
@@ -69,4 +93,9 @@ h1 { margin: 0; font-family: Georgia, serif; font-size: clamp(3rem, 6vw, 5.2rem)
   .page-heading { display: block; padding: 30px 24px; }
   .season-stat { min-width: 0; margin-top: 25px; }
   .section-title > span { display: none; }
+  .player-score { min-height: 118px; padding: 21px 18px; }
+  .player-identity { gap: 10px; }
+  .player-identity > span { width: 40px; height: 40px; }
+  .player-victories { min-width: 72px; }
+  .player-victories strong { font-size: 2.2rem; }
 }

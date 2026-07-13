@@ -6,6 +6,14 @@ import { getPlayerName, PlayerCode } from '../../models/teams';
 import { ClassementService } from '../../services/classement.service';
 import { LeaguesService } from '../../services/leagues.service';
 
+interface PlayerScore {
+  code: PlayerCode;
+  name: string;
+  victories: number;
+  deckCount: number;
+  leading: boolean;
+}
+
 @Component({
   standalone: false,
   selector: 'app-classement',
@@ -36,6 +44,24 @@ export class ClassementComponent implements OnInit, OnDestroy {
 
   get totalGamesPlayed(): number {
     return this.classement.reduce((total, standing) => total + standing.nbVictory, 0);
+  }
+
+  get playerScores(): PlayerScore[] {
+    const scores = (['A', 'P'] as PlayerCode[]).map(code => ({
+      code,
+      name: getPlayerName(code),
+      victories: this.classement
+        .filter(standing => standing.team.player === code)
+        .reduce((total, standing) => total + standing.nbVictory, 0),
+      deckCount: this.classement.filter(standing => standing.team.player === code).length,
+    }));
+    const bestScore = Math.max(...scores.map(score => score.victories));
+    const hasSingleLeader = bestScore > 0 && scores.filter(score => score.victories === bestScore).length === 1;
+
+    return scores.map(score => ({
+      ...score,
+      leading: hasSingleLeader && score.victories === bestScore,
+    }));
   }
 
   playerName(player: PlayerCode): string {
