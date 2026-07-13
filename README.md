@@ -1,27 +1,59 @@
-# NgFootball
+# Fabulous Edgar Markov Tournament
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 16.2.0.
+Application Angular permettant de gérer des decks, des ligues et les rencontres du tournoi Commander.
 
-## Development server
+## Développement local
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The application will automatically reload if you change any of the source files.
+Installer les dépendances puis démarrer le serveur de développement :
 
-## Code scaffolding
+```powershell
+npm.cmd install
+npm.cmd start
+```
 
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
+L'application est ensuite accessible sur `http://localhost:4200/`.
 
-## Build
+## Build de production local
 
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory.
+```powershell
+npm.cmd run build
+```
 
-## Running unit tests
+Le résultat est généré dans `dist/ng-football/browser/`.
 
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
+## Mise à jour de GitHub Pages
 
-## Running end-to-end tests
+GitHub Pages publie le contenu du dossier `docs` de la branche `main`. La configuration `github-pages` d'Angular renseigne automatiquement le bon chemin de base `/ng-football/` et place `index.html` directement dans `docs`.
 
-Run `ng e2e` to execute the end-to-end tests via a platform of your choice. To use this command, you need to first add a package that implements end-to-end testing capabilities.
+Depuis la racine du projet, générer la version à publier :
 
-## Further help
+```powershell
+npm.cmd run build -- --configuration production,github-pages
+New-Item -ItemType File -Path .\docs\.nojekyll -Force | Out-Null
+```
 
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI Overview and Command Reference](https://angular.io/cli) page.
+Vérifier que le point d'entrée a bien été créé :
+
+```powershell
+Test-Path .\docs\index.html
+```
+
+La commande doit retourner `True`. Il reste ensuite à publier le nouveau build :
+
+```powershell
+git add angular.json src docs README.md
+git commit -m "Update GitHub Pages application"
+git push origin main
+```
+
+Le déploiement est alors déclenché automatiquement et l'application devient disponible sur :
+
+<https://anthonylispet.github.io/ng-football/>
+
+En cas d'ancienne version conservée par le navigateur, effectuer un rechargement forcé avec `Ctrl + F5`.
+
+## Tests
+
+```powershell
+npm.cmd test
+```
