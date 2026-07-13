@@ -1,33 +1,41 @@
-import {Component, EventEmitter, Input, Output} from '@angular/core';
-import {Match} from "../../../models/match";
-import {Player, Team} from "../../../models/teams";
+import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Match } from '../../../models/match';
+import { getPlayerName, PlayerCode, Team } from '../../../models/teams';
 
 @Component({
   standalone: false,
   selector: 'app-match',
   templateUrl: './match.component.html',
-  styleUrls: ['./match.component.scss']
+  styleUrls: ['./match.component.scss'],
 })
 export class MatchComponent {
+  @Input({ required: true }) match!: Match;
+  @Input() saving = false;
+  @Output() winnerSelected = new EventEmitter<Team | null>();
 
-  @Input() match!:Match;
-  @Output() winnerSelected = new EventEmitter<Team|string>();
-
-  selectWinner(event: any): void {
-    const winnerId = event.target.value;
-    let winner = "";
-    if (winnerId !== ""){
-      // @ts-ignore
-      winner = winnerId == this.match?.team1.id ? this.match?.team1 : this.match?.team2;
+  selectWinner(team: Team): void {
+    if (!this.saving) {
+      this.winnerSelected.emit(team);
     }
-    this.winnerSelected.emit(winner);
   }
 
-  getPlayerName(player: Player | undefined): string  {
-    // @ts-ignore
-    return Player[player];
+  clearWinner(): void {
+    if (!this.saving) {
+      this.winnerSelected.emit(null);
+    }
   }
 
+  playerName(player: PlayerCode): string {
+    return getPlayerName(player);
+  }
 
-  protected readonly Player = Player;
+  initials(name: string): string {
+    return name
+      .split(/\s+/)
+      .filter(Boolean)
+      .slice(0, 2)
+      .map(part => part[0])
+      .join('')
+      .toUpperCase();
+  }
 }

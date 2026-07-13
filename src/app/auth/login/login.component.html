@@ -1,56 +1,90 @@
 <main class="login-page">
-  <section class="login-visual" aria-label="Fabulous Edgar Markov Tournament">
+  <section class="tournament-stage" aria-label="Fabulous Edgar Markov Tournament">
     <div class="brand">
-      <span class="brand-mark" aria-hidden="true">M</span>
-      <span>FABULOUS EDGAR MARKOV</span>
+      <span class="brand-sigil" aria-hidden="true">F</span>
+      <span>
+        <strong>Fabulous Edgar Markov</strong>
+        <small>Tournament</small>
+      </span>
     </div>
 
-    <div class="visual-copy">
-      <p class="eyebrow">Le Grimoire des Commandants</p>
-      <h1>Votre légende<br>commence ici.</h1>
-      <p class="intro">Consignez chaque partie, suivez vos decks et gravez le nom du meilleur commandant au classement.</p>
+    <div class="tournament-copy">
+      <h1>À vos decks.<br>Prêts ? Jouez.</h1>
+      <p>Suivez toutes les rencontres, désignez les vainqueurs<br>et découvrez quel deck dominera la saison.</p>
     </div>
 
-    <div class="mana-orbit" aria-hidden="true">
-      <span class="card-rune">✦</span>
+    <div class="deck-duel" aria-label="Anthony avec Edgar Markov affronte Pierre avec Otrimi, l’éternel taquin">
+      <div class="contender">
+        <img class="deck-thumbnail" src="assets/edgar-markov-official.png" alt="Carte Edgar Markov d’Anthony">
+        <div class="player">
+          <strong>Anthony</strong>
+          <span class="color-identity" aria-label="Identité blanc, noir et rouge">
+            <img src="assets/mana/W.svg" alt="Mana blanc">
+            <img src="assets/mana/B.svg" alt="Mana noir">
+            <img src="assets/mana/R.svg" alt="Mana rouge">
+          </span>
+        </div>
+      </div>
+
+      <span class="versus">VS</span>
+
+      <div class="contender right">
+        <div class="player">
+          <strong>Pierre</strong>
+          <span class="color-identity" aria-label="Identité bleu, noir et vert">
+            <img src="assets/mana/U.svg" alt="Mana bleu">
+            <img src="assets/mana/B.svg" alt="Mana noir">
+            <img src="assets/mana/G.svg" alt="Mana vert">
+          </span>
+        </div>
+        <img class="deck-thumbnail otrimi" src="assets/otrimi-eternel-taquin-official.png" alt="Carte Otrimi, l’éternel taquin de Pierre">
+      </div>
     </div>
   </section>
 
   <section class="login-panel">
-    <div class="mobile-brand">
-      <span class="brand-mark" aria-hidden="true">M</span>
-      <span>FABULOUS EDGAR MARKOV</span>
+    <div class="mana-constellation" aria-hidden="true">
+      <img class="mana-mark mark-black" src="assets/mana/B.svg" alt="">
+      <img class="mana-mark mark-white" src="assets/mana/W.svg" alt="">
+      <img class="mana-mark mark-green" src="assets/mana/G.svg" alt="">
+    </div>
+
+    <div class="mobile-brand brand">
+      <span class="brand-sigil" aria-hidden="true">F</span>
+      <span>
+        <strong>Fabulous Edgar Markov</strong>
+        <small>Tournament</small>
+      </span>
     </div>
 
     <div class="login-card">
-      <p class="eyebrow">Cercle des planeswalkers</p>
-      <h2>Reprenez place à la table</h2>
-      <p class="subtitle">Utilisez votre compte Google autorisé pour ouvrir le grimoire de la saison.</p>
+      <p class="eyebrow">Espace du tournoi</p>
+      <h2>Rejoignez la table</h2>
+      <p class="subtitle">Connectez-vous pour retrouver la saison et enregistrer vos parties.</p>
 
       @if (loginError === 'unauthorized') {
         <div class="login-error" role="alert">
           <span aria-hidden="true">!</span>
-          Ce compte Google n’est pas autorisé à rejoindre la table.
+          Ce compte ne figure pas sur la liste des joueurs invités.
         </div>
       } @else if (loginError === 'generic') {
         <div class="login-error" role="alert">
           <span aria-hidden="true">!</span>
-          La connexion Google a échoué. Veuillez réessayer.
+          La connexion a échoué. Veuillez réessayer.
         </div>
       }
 
       <button class="google-button" type="button" (click)="loginWithGoogle()" [disabled]="submitting">
-        <span class="google-logo" aria-hidden="true">G</span>
+        <span class="google-logo" aria-hidden="true">
+          <img src="assets/google-g-logo.png" alt="">
+        </span>
         <span>{{ submitting ? 'Connexion…' : 'Continuer avec Google' }}</span>
         <span class="arrow" aria-hidden="true">→</span>
       </button>
 
-      <p class="access-note">
-        <span aria-hidden="true">●</span>
-        Accès réservé aux commandants invités
-      </p>
+      <p class="access-note">Accès réservé</p>
     </div>
 
-    <p class="footer-copy">Fabulous Edgar Markov Tournament · Accès privé</p>
+    <p class="footer-copy">Fabulous Edgar Markov Tournament · Commander privé</p>
   </section>
 </main>

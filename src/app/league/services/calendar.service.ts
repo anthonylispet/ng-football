@@ -1,99 +1,113 @@
-import { Injectable } from '@angular/core';
-import {Match} from "../models/match";
-import { Observable, Subject, takeUntil } from 'rxjs';
+import { Injectable, NgZone } from '@angular/core';
 import { onValue, ref, set } from 'firebase/database';
-import {TeamsService} from "./teams.service";
+import { Observable, shareReplay, take } from 'rxjs';
 import { firebaseDatabase } from '../../firebase';
+import { Match } from '../models/match';
+import { PlayerCode, Team } from '../models/teams';
+import { TeamsService } from './teams.service';
 
-@Injectable({
-  providedIn: 'root'
-})
+@Injectable({ providedIn: 'root' })
 export class CalendarService {
+  private readonly matches$: Observable<Match[]>;
 
-  private destroy$ = new Subject<void>();
+  constructor(
+    private readonly teamsService: TeamsService,
+    private readonly zone: NgZone,
+  ) {
+    this.matches$ = new Observable<Match[]>(subscriber => {
+      const unsubscribe = onValue(
+        ref(firebaseDatabase, 'matchs'),
+        snapshot => this.zone.run(() => subscriber.next(this.normalizeMatches(snapshot.val()))),
+        error => this.zone.run(() => subscriber.error(error)),
+      );
 
-  constructor(private teamsService: TeamsService) { }
+      return unsubscribe;
+    }).pipe(shareReplay({ bufferSize: 1, refCount: true }));
+  }
 
   getMatchs(): Observable<Match[]> {
-    return new Observable<Match[]>(subscriber =>
-      onValue(
-        ref(firebaseDatabase, 'matchs'),
-        snapshot => subscriber.next(snapshot.val() ?? []),
-        error => subscriber.error(error)
-      )
-    );
+    return this.matches$;
   }
 
-  /*updateMatches(matchs: Match[]): Observable<any> {
+  updateWinner(matchIndex: number, winner: Team | null): Promise<void> {
+    return set(ref(firebaseDatabase, `matchs/${matchIndex}/winner`), winner);
+  }
 
-    /*return this.http.put('assets/matchs.json', matchs).pipe(
-        catchError(this.handleError<any>('updateMatches'))
-    );
-  }*/
+  updateMatches(matches: Match[]): Promise<void> {
+    return set(ref(firebaseDatabase, 'matchs'), matches);
+  }
 
-  updateMatches(matchs: Match[]) {
-  // Référence à la collection
-    const reference = ref(firebaseDatabase, 'matchs');
+  resetCalendar(): void {
+    this.teamsService.getTeams().pipe(take(1)).subscribe({
+      next: teams => {
+        const anthonyTeams = teams.filter(team => team.player === 'A');
+        const pierreTeams = teams.filter(team => team.player === 'P');
+        const numberOfSeries = Math.min(anthonyTeams.length, pierreTeams.length);
+        const calendar: Match[] = [];
 
-    // Mettre à jour les données avec le nouveau JSON
-    set(reference, matchs)
-      .then(() => {
-        console.log("Données mises à jour avec succès !");
-      })
-      .catch((error) => {
-        console.error("Erreur lors de la mise à jour des données : ", error);
-      });
-}
-
-  resetCalendar(){
-    this.teamsService.getTeams().pipe(takeUntil(this.destroy$)).subscribe(teams=>{
-      const aTeams= teams.filter(team=> team.player.toString() === 'A');
-      const pTeams= teams.filter(team=> team.player.toString() === 'P');
-      let calendar:Match[]=[];
-
-      let nbSeries = (aTeams.length)
-      let cpt = 0;
-
-      for (let i = 1 ; i<= nbSeries ; i++){
-        cpt=(i-1);
-        for (let j =0 ; j < (aTeams.length); j++ ){
-
-          console.log((((i-1)*aTeams.length)+j+1)+' - '+j+' - '+cpt);
-
-
-
-          let match: Match = {
-            matchId : (((i-1)*aTeams.length-1)+j+1),
-            team1 : aTeams[j],
-            team2 :pTeams[cpt]
+        for (let series = 0; series < numberOfSeries; series++) {
+          for (let index = 0; index < numberOfSeries; index++) {
+            calendar.push({
+              matchId: calendar.length,
+              team1: anthonyTeams[index],
+              team2: pierreTeams[(index + series) % numberOfSeries],
+              winner: null,
+            });
           }
-          calendar.push(match);
-
-          cpt++;
-          cpt = cpt >= (aTeams.length) ? 0 : cpt;
         }
 
-      }
-
-      //on trie le résultat par matchId
-      calendar.sort((match,match2) => {
-        return match.matchId - match2.matchId
-      });
-
-      const reference = ref(firebaseDatabase, 'matchs');
-      set(reference, calendar)
-        .then(() => {
-          console.log("Données mises à jour avec succès !");
-        })
-        .catch((error) => {
-          console.error("Erreur lors de la mise à jour des données : ", error);
-        });
+        void this.updateMatches(calendar);
+      },
+      error: error => console.error('Impossible de générer le calendrier.', error),
     });
-
   }
 
-  ngOnDestroy(){
-    this.destroy$.next();
-    this.destroy$.complete();
+  private normalizeMatches(value: unknown): Match[] {
+    const entries = Array.isArray(value)
+      ? value
+      : value && typeof value === 'object'
+        ? Object.values(value)
+        : [];
+
+    return entries
+      .filter((entry): entry is Record<string, unknown> => !!entry && typeof entry === 'object')
+      .map((entry, index) => {
+        const team1 = this.normalizeTeam(entry['team1']);
+        const team2 = this.normalizeTeam(entry['team2']);
+
+        if (!team1 || !team2) {
+          return null;
+        }
+
+        return {
+          matchId: Number.isFinite(Number(entry['matchId'])) ? Number(entry['matchId']) : index,
+          team1,
+          team2,
+          winner: this.normalizeTeam(entry['winner']),
+        } satisfies Match;
+      })
+      .filter((match): match is Match => match !== null)
+      .sort((left, right) => left.matchId - right.matchId);
+  }
+
+  private normalizeTeam(value: unknown): Team | null {
+    if (!value || typeof value !== 'object') {
+      return null;
+    }
+
+    const record = value as Record<string, unknown>;
+    if (!Number.isFinite(Number(record['id'])) || typeof record['name'] !== 'string') {
+      return null;
+    }
+
+    return {
+      id: Number(record['id']),
+      name: record['name'].trim(),
+      player: this.normalizePlayer(record['player']),
+    };
+  }
+
+  private normalizePlayer(value: unknown): PlayerCode {
+    return value === 'P' || value === 'Pierre' ? 'P' : 'A';
   }
 }

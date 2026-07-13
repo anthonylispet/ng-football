@@ -1,27 +1,87 @@
 <section class="page-shell">
   <header class="page-heading">
-    <div>
+    <div class="heading-copy">
       <p class="eyebrow">Saison Commander</p>
-      <h1>Chronique des parties</h1>
-      <p class="description">Consignez l’issue de chaque affrontement entre vos decks.</p>
+      <h1>Les parties</h1>
+      <p class="description">Chaque duel écrit un nouveau chapitre du tournoi.</p>
     </div>
-    <div class="season-progress">
-      <strong>{{ completedGames }}</strong>
-      <span>sur {{ matchs.length }} parties résolues</span>
+
+    <div class="season-progress" [style.--progress]="completionPercentage + '%'">
+      <div class="progress-ring">
+        <div>
+          <strong>{{ completionPercentage }}</strong>
+          <span>%</span>
+        </div>
+      </div>
+      <div class="progress-copy">
+        <small>Progression</small>
+        <strong>{{ completedGames }} sur {{ matches.length }}</strong>
+        <span>{{ pendingGames }} partie{{ pendingGames > 1 ? 's' : '' }} à jouer</span>
+      </div>
     </div>
   </header>
 
-  @if (matchs.length) {
-    <div class="games-list">
-      <div *ngFor="let match of matchs; let i = index" class="game" [class.has-winner]="!!match.winner" #matches>
-        <app-match [match]="match" (winnerSelected)="updateWinner(i, $event)"></app-match>
+  @if (loadError) {
+    <div class="status-card error-state" role="alert">
+      <span class="status-icon" aria-hidden="true">!</span>
+      <div>
+        <strong>Le grimoire ne répond pas</strong>
+        <p>{{ loadError }}</p>
       </div>
+      <button type="button" (click)="retry()">Réessayer</button>
     </div>
+  } @else if (loading) {
+    <div class="loading-grid" aria-label="Chargement des parties">
+      @for (placeholder of [1, 2, 3, 4]; track placeholder) {
+        <div class="loading-card"><span></span><span></span><span></span></div>
+      }
+    </div>
+  } @else if (matches.length) {
+    <div class="games-toolbar">
+      <div class="filters" aria-label="Filtrer les parties">
+        <button type="button" [class.active]="filter === 'all'" (click)="setFilter('all')">
+          Toutes <span>{{ matches.length }}</span>
+        </button>
+        <button type="button" [class.active]="filter === 'pending'" (click)="setFilter('pending')">
+          À jouer <span>{{ pendingGames }}</span>
+        </button>
+        <button type="button" [class.active]="filter === 'completed'" (click)="setFilter('completed')">
+          Terminées <span>{{ completedGames }}</span>
+        </button>
+      </div>
+      <p><span aria-hidden="true">●</span> Sélectionnez directement le deck victorieux</p>
+    </div>
+
+    @if (saveError) {
+      <div class="save-error" role="alert">{{ saveError }}</div>
+    }
+
+    @if (filteredMatches.length) {
+      <div class="games-grid">
+        @for (match of filteredMatches; track match.matchId) {
+          <app-match
+            [match]="match"
+            [saving]="isSaving(match.matchId)"
+            (winnerSelected)="updateWinner(match.matchId, $event)"
+          ></app-match>
+        }
+      </div>
+    } @else {
+      <div class="status-card empty-filter">
+        <img src="assets/mana/W.svg" alt="" aria-hidden="true">
+        <div>
+          <strong>Aucune partie dans cette sélection</strong>
+          <p>Choisissez un autre filtre pour poursuivre la saison.</p>
+        </div>
+      </div>
+    }
   } @else {
-    <div class="empty-state">
-      <span aria-hidden="true">✦</span>
-      <h2>Le grimoire est encore vierge</h2>
-      <p>Aucune partie Commander n’a été préparée pour cette saison.</p>
+    <div class="status-card empty-state">
+      <img src="assets/mana/B.svg" alt="" aria-hidden="true">
+      <div>
+        <strong>Le grimoire est encore vierge</strong>
+        <p>Aucune partie n’a été préparée pour cette saison.</p>
+      </div>
     </div>
   }
 </section>

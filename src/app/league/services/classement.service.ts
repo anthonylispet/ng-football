@@ -1,57 +1,38 @@
 import { Injectable } from '@angular/core';
-import {BehaviorSubject, forkJoin, map, Observable, of, switchMap} from "rxjs";
-import {Classement} from "../models/classement";
-import {League} from "../../football-results/models/class/league";
-import {Standing} from "../../football-results/models/class/standing";
-import {TeamsService} from "./teams.service";
-import {CalendarService} from "./calendar.service";
-import {Player, Team} from "../models/teams";
-import {Match} from "../models/match";
+import { combineLatest, map, Observable, shareReplay } from 'rxjs';
+import { Classement } from '../models/classement';
+import { CalendarService } from './calendar.service';
+import { TeamsService } from './teams.service';
 
-@Injectable({
-  providedIn: 'root'
-})
+@Injectable({ providedIn: 'root' })
 export class ClassementService {
+  private readonly classement$: Observable<Classement[]>;
 
-  private _currentClassement: BehaviorSubject<Classement[]|null > = new BehaviorSubject<Classement[] |null>(null);
-  currentClassement$ = this._currentClassement.asObservable();
-
-  constructor(private teamsService: TeamsService,private calendarService: CalendarService) { }
-
-  getClassement(): Observable<Classement[]> {
-    return this.teamsService.getTeams().pipe(
-      switchMap(teams => {
-        return this.calendarService.getMatchs().pipe(
-          map(matchs => {
-            const classement: Classement[] = [];
-
-            teams.forEach(team => {
-              const nbPlayed = matchs.filter(match => ( (match.team1.id === team.id || match.team2.id === team.id) && (match.winner?.id != null) )).length;
-              const nbVictory = matchs.filter(match => ( match.winner?.id === team.id)).length;
-
-              classement.push({
-                team: team,
-                nbPlayed: nbPlayed,
-                nbVictory: nbVictory
-              });
-            });
-            classement.sort((a,b)=> {
-
-              // Si le nombre de victoires est différent, trier par le nombre de victoires
-              if (a.nbVictory !== b.nbVictory) {
-                return b.nbVictory - a.nbVictory;
-              }
-              // Si le nombre de victoires est le même, trier par le nombre de matchs joués
-              return b.nbPlayed - a.nbPlayed;
-            });
-            return classement;
-          })
-        );
-      })
+  constructor(
+    private readonly teamsService: TeamsService,
+    private readonly calendarService: CalendarService,
+  ) {
+    this.classement$ = combineLatest([
+      this.teamsService.getTeams(),
+      this.calendarService.getMatchs(),
+    ]).pipe(
+      map(([teams, matches]) => teams.map(team => ({
+        team,
+        nbPlayed: matches.filter(match =>
+          match.winner !== null && (match.team1.id === team.id || match.team2.id === team.id),
+        ).length,
+        nbVictory: matches.filter(match => match.winner?.id === team.id).length,
+      }))),
+      map(classement => classement.sort((left, right) =>
+        right.nbVictory - left.nbVictory
+        || right.nbPlayed - left.nbPlayed
+        || left.team.name.localeCompare(right.team.name, 'fr'),
+      )),
+      shareReplay({ bufferSize: 1, refCount: true }),
     );
   }
 
-  setCurrentClassement(classement:Classement[]) {
-    this._currentClassement.next(classement);
+  getClassement(): Observable<Classement[]> {
+    return this.classement$;
   }
 }

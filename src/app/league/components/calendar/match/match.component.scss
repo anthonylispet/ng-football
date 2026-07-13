@@ -1,137 +1,49 @@
-.game-card {
-  display: grid;
-  grid-template-columns: 86px 1fr minmax(190px, 230px);
-  min-height: 124px;
-  align-items: center;
-  gap: 20px;
-  padding: 18px 22px;
-  border: 1px solid #ddd7c9;
-  border-radius: 13px;
-  background: #fbfaf6;
-  box-shadow: 0 5px 18px rgba(30, 38, 32, .05);
-}
+:host { display: block; min-width: 0; }
 
-.game-number {
-  color: #9a8c6d;
-  font-size: .68rem;
-  font-weight: 800;
-  letter-spacing: .09em;
-  text-transform: uppercase;
-}
+.game-card { position: relative; min-height: 218px; padding: 18px; overflow: hidden; border: 1px solid #d8d3c8; border-radius: 16px; background: rgba(251, 250, 246, .93); box-shadow: 0 10px 28px rgba(30, 38, 32, .055); transition: border-color .2s, box-shadow .2s, transform .2s; }
+.game-card::after { position: absolute; right: -55px; bottom: -70px; width: 145px; height: 145px; opacity: .025; background: url('/assets/mana/B.svg') center / contain no-repeat; content: ''; transform: rotate(15deg); pointer-events: none; }
+.game-card:hover { border-color: #c7bea8; box-shadow: 0 15px 34px rgba(30, 38, 32, .095); transform: translateY(-2px); }
+.game-card.resolved { border-color: #c9c0a8; }
+.game-card.saving { pointer-events: none; }
 
-.decks {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) 32px minmax(0, 1fr);
-  align-items: center;
-  gap: 12px;
-}
+.game-header { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 16px; padding: 0 3px 13px; border-bottom: 1px solid #e4dfd4; }
+.game-number { color: #85785d; font-size: .62rem; font-weight: 900; letter-spacing: .14em; text-transform: uppercase; }
+.pending-label, .result-label, .saving-label { display: flex; align-items: center; gap: 5px; font-size: .58rem; font-weight: 900; letter-spacing: .08em; text-transform: uppercase; }
+.pending-label { color: #9b9588; }
+.result-label { color: #3b7650; }
+.result-label i { display: grid; width: 16px; height: 16px; place-items: center; border-radius: 50%; color: #fff; font-size: .55rem; font-style: normal; background: #3f7954; }
+.saving-label { color: #8b7545; }
+.saving-label i { width: 12px; height: 12px; border: 2px solid #b9a77c; border-top-color: transparent; border-radius: 50%; animation: spin .7s linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
 
-.deck {
-  display: grid;
-  min-width: 0;
-  padding-left: 13px;
-  border-left: 3px solid #8b4e45;
-}
+.duel { display: grid; grid-template-columns: minmax(0, 1fr) 34px minmax(0, 1fr); align-items: stretch; gap: 10px; }
+.deck-choice { position: relative; display: flex; min-width: 0; min-height: 82px; align-items: center; gap: 11px; padding: 10px; overflow: hidden; border: 1px solid #ddd8ce; border-radius: 12px; text-align: left; background: #f5f2ea; transition: border-color .2s, box-shadow .2s, background .2s, opacity .2s; }
+.deck-choice:hover:not(:disabled) { border-color: #aa9470; background: #faf8f2; box-shadow: 0 8px 18px #44352210; }
+.deck-choice.pierre { justify-content: flex-end; text-align: right; }
+.deck-choice.winner { border-color: #a98a43; background: linear-gradient(135deg, #fffaf0, #f3ead0); box-shadow: inset 0 0 0 1px #d8bd79, 0 8px 20px #8f773520; }
+.deck-choice.loser { opacity: .54; filter: saturate(.65); }
+.deck-choice:disabled { cursor: wait; }
+.deck-monogram { display: grid; width: 42px; height: 54px; flex: 0 0 auto; place-items: center; border: 1px solid #80504a; border-radius: 7px; color: #e0b19a; font-family: Georgia, serif; font-size: .72rem; background: radial-gradient(circle, #713534, #201619 72%); box-shadow: 3px 3px 0 #3b2120; }
+.pierre .deck-monogram { border-color: #4b7373; color: #a4d0c1; background: radial-gradient(circle, #315d59, #142321 72%); box-shadow: -3px 3px 0 #213c39; }
+.deck-copy { display: grid; min-width: 0; gap: 4px; }
+.deck-copy small { color: #747b74; font-size: .57rem; font-weight: 900; letter-spacing: .1em; text-transform: uppercase; }
+.deck-copy strong { overflow: hidden; color: #202820; font-family: Georgia, serif; font-size: .9rem; font-weight: 600; line-height: 1.15; text-overflow: ellipsis; }
+.victory-mark { position: absolute; top: 6px; right: 6px; display: grid; width: 20px; height: 20px; place-items: center; border-radius: 50%; color: #fff; font-size: .62rem; background: #aa8840; box-shadow: 0 4px 9px #6e571f3d; }
+.pierre .victory-mark { right: auto; left: 6px; }
+.versus { align-self: center; display: grid; width: 32px; height: 32px; place-items: center; border: 1px solid #bba979; border-radius: 50%; color: #8a7441; font-family: Georgia, serif; font-size: .58rem; background: #efeade; }
 
-.deck-right {
-  border-color: #3d6c72;
-}
+.game-footer { position: relative; z-index: 1; display: flex; min-height: 34px; align-items: flex-end; justify-content: space-between; gap: 12px; padding: 12px 3px 0; }
+.game-footer p { margin: 0; color: #5e665f; font-size: .68rem; }
+.game-footer p span { margin-right: 5px; color: #92783e; font-size: .55rem; font-weight: 900; letter-spacing: .09em; text-transform: uppercase; }
+.choose-winner { color: #90928c !important; }
+.clear-result { padding: 0; border: 0; color: #8d8270; font-size: .62rem; text-decoration: underline; text-underline-offset: 3px; background: transparent; }
+.clear-result:hover { color: #714744; }
 
-.deck.winner {
-  border-color: #b28e36;
-}
-
-.deck strong {
-  overflow: hidden;
-  color: #222a25;
-  font-family: Georgia, serif;
-  font-size: 1.05rem;
-  font-weight: 600;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-.owner {
-  color: #58635c;
-  font-size: .68rem;
-  font-weight: 800;
-  letter-spacing: .08em;
-  text-transform: uppercase;
-}
-
-.deck small {
-  margin-top: 3px;
-  color: #a09f97;
-  font-size: .68rem;
-}
-
-.versus {
-  display: grid;
-  width: 30px;
-  height: 30px;
-  place-items: center;
-  border: 1px solid #d1c8b5;
-  border-radius: 50%;
-  color: #8b7b5d;
-  font-family: Georgia, serif;
-  font-size: .64rem;
-  background: #f2eee4;
-}
-
-.outcome label {
-  display: block;
-  margin-bottom: 7px;
-  color: #777a74;
-  font-size: .64rem;
-  font-weight: 800;
-  letter-spacing: .1em;
-  text-transform: uppercase;
-}
-
-select {
-  width: 100%;
-  min-height: 40px;
-  padding: 0 30px 0 11px;
-  border: 1px solid #d4d0c6;
-  border-radius: 8px;
-  outline: 0;
-  color: #555d57;
-  font-size: .78rem;
-  background: #fff;
-}
-
-select:focus {
-  border-color: #8b7440;
-  box-shadow: 0 0 0 3px rgba(139, 116, 64, .11);
-}
-
-select.has-result {
-  border-color: #8da694;
-  color: #28553a;
-  background: #f3f8f4;
-}
-
-@media (max-width: 760px) {
-  .game-card {
-    grid-template-columns: 1fr;
-    gap: 14px;
-  }
-
-  .game-number {
-    padding-bottom: 10px;
-    border-bottom: 1px solid #e5e0d5;
-  }
-}
-
-@media (max-width: 430px) {
-  .decks {
-    grid-template-columns: 1fr;
-  }
-
-  .versus {
-    width: auto;
-    height: auto;
-    border: 0;
-    background: transparent;
-  }
+@media (max-width: 480px) {
+  .game-card { padding: 15px; }
+  .duel { grid-template-columns: 1fr; }
+  .versus { width: auto; height: 20px; border: 0; background: transparent; }
+  .deck-choice.pierre { flex-direction: row-reverse; justify-content: flex-start; text-align: left; }
+  .pierre .victory-mark { right: 6px; left: auto; }
+  .game-footer { align-items: flex-start; flex-direction: column; }
 }

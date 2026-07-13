@@ -1,32 +1,59 @@
-<article class="game-card">
-  <div class="game-number">Partie {{ match.matchId + 1 }}</div>
+<article class="game-card" [class.resolved]="match.winner !== null" [class.saving]="saving">
+  <header class="game-header">
+    <span class="game-number">Partie {{ match.matchId + 1 | number:'2.0-0' }}</span>
+    @if (saving) {
+      <span class="saving-label"><i aria-hidden="true"></i> Enregistrement</span>
+    } @else if (match.winner) {
+      <span class="result-label"><i aria-hidden="true">✓</i> Résultat enregistré</span>
+    } @else {
+      <span class="pending-label">À jouer</span>
+    }
+  </header>
 
-  <div class="decks">
-    <div class="deck" [class.winner]="match.winner?.id === match.team1.id">
-      <span class="owner">{{ getPlayerName(match.team1.player) }}</span>
-      <strong>{{ match.team1.name }}</strong>
-      <small>Deck Commander</small>
-    </div>
+  <div class="duel">
+    <button
+      type="button"
+      class="deck-choice anthony"
+      [class.winner]="match.winner?.id === match.team1.id"
+      [class.loser]="match.winner !== null && match.winner.id !== match.team1.id"
+      [attr.aria-pressed]="match.winner?.id === match.team1.id"
+      [disabled]="saving"
+      (click)="selectWinner(match.team1)"
+    >
+      <span class="deck-monogram" aria-hidden="true">{{ initials(match.team1.name) }}</span>
+      <span class="deck-copy">
+        <small>{{ playerName(match.team1.player) }}</small>
+        <strong>{{ match.team1.name }}</strong>
+      </span>
+      @if (match.winner?.id === match.team1.id) { <span class="victory-mark" aria-hidden="true">✓</span> }
+    </button>
 
     <span class="versus" aria-label="contre">VS</span>
 
-    <div class="deck deck-right" [class.winner]="match.winner?.id === match.team2.id">
-      <span class="owner">{{ getPlayerName(match.team2.player) }}</span>
-      <strong>{{ match.team2.name }}</strong>
-      <small>Deck Commander</small>
-    </div>
+    <button
+      type="button"
+      class="deck-choice pierre"
+      [class.winner]="match.winner?.id === match.team2.id"
+      [class.loser]="match.winner !== null && match.winner.id !== match.team2.id"
+      [attr.aria-pressed]="match.winner?.id === match.team2.id"
+      [disabled]="saving"
+      (click)="selectWinner(match.team2)"
+    >
+      <span class="deck-copy">
+        <small>{{ playerName(match.team2.player) }}</small>
+        <strong>{{ match.team2.name }}</strong>
+      </span>
+      <span class="deck-monogram" aria-hidden="true">{{ initials(match.team2.name) }}</span>
+      @if (match.winner?.id === match.team2.id) { <span class="victory-mark" aria-hidden="true">✓</span> }
+    </button>
   </div>
 
-  <div class="outcome">
-    <label [for]="'winner-' + match.matchId">Deck victorieux</label>
-    <select
-      [id]="'winner-' + match.matchId"
-      (change)="selectWinner($event)"
-      [class.has-result]="!!match.winner"
-    >
-      <option value="" [selected]="match.winner === undefined">Issue à déterminer</option>
-      <option [value]="match.team1.id" [selected]="match.winner?.id === match.team1.id">{{ match.team1.name }}</option>
-      <option [value]="match.team2.id" [selected]="match.winner?.id === match.team2.id">{{ match.team2.name }}</option>
-    </select>
-  </div>
+  <footer class="game-footer">
+    @if (match.winner; as winner) {
+      <p><span>Vainqueur</span> {{ winner.name }}</p>
+      <button type="button" class="clear-result" [disabled]="saving" (click)="clearWinner()">Annuler le résultat</button>
+    } @else {
+      <p class="choose-winner">Cliquez sur le deck victorieux pour consigner la partie.</p>
+    }
+  </footer>
 </article>
