@@ -13,7 +13,7 @@ import { firebaseAuth } from '../firebase';
 export class AuthService {
   private readonly allowedEmails = new Set([
     'anthony.lispet@gmail.com',
-    'pierre.simon@gmail.com',
+    'pierre.simon7041@gmail.com',
   ]);
   private readonly googleProvider = new GoogleAuthProvider();
   private readonly userSubject = new ReplaySubject<User | null>(1);

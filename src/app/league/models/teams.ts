@@ -25,7 +25,7 @@ export function getPlayerCodeFromEmail(email: string | null | undefined): Player
     return 'A';
   }
 
-  if (normalizedEmail === 'pierre.simon@gmail.com') {
+  if (normalizedEmail === 'pierre.simon7041@gmail.com') {
     return 'P';
   }
 
