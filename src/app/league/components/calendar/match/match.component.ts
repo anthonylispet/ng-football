@@ -11,16 +11,17 @@ import { getPlayerName, PlayerCode, Team } from '../../../models/teams';
 export class MatchComponent {
   @Input({ required: true }) match!: Match;
   @Input() saving = false;
+  @Input() readonly = false;
   @Output() winnerSelected = new EventEmitter<Team | null>();
 
   selectWinner(team: Team): void {
-    if (!this.saving) {
+    if (!this.saving && !this.readonly) {
       this.winnerSelected.emit(team);
     }
   }
 
   clearWinner(): void {
-    if (!this.saving) {
+    if (!this.saving && !this.readonly) {
       this.winnerSelected.emit(null);
     }
   }

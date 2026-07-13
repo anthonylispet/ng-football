@@ -47,8 +47,6 @@
 .main-nav a:hover { color: #f6f2e7; background: #ffffff08; }
 .main-nav a.active { color: #f2d991; background: linear-gradient(180deg, #ffffff09, #ffffff03); }
 .main-nav a.active::after { position: absolute; right: 17px; bottom: 0; left: 17px; height: 2px; background: #c9a952; content: ''; box-shadow: 0 0 12px #c9a95288; }
-.nav-index { color: #5f6a62; font-family: Georgia, serif; font-size: .62rem; }
-.main-nav a.active .nav-index { color: #a88b52; }
 
 .session-actions { display: flex; min-width: 0; align-items: center; gap: 10px; margin-left: auto; }
 .user-chip { display: flex; min-width: 0; align-items: center; gap: 9px; padding: 5px 11px 5px 5px; border: 1px solid #ffffff12; border-radius: 999px; background: #ffffff08; }
@@ -61,14 +59,37 @@
 
 .app-content { position: relative; z-index: 1; min-height: calc(100vh - 82px); }
 
+.league-context-bar { position: sticky; z-index: 19; top: 82px; display: flex; min-height: 58px; align-items: center; gap: 18px; padding: 8px clamp(18px,4vw,62px); border-bottom: 1px solid #cfc8b9; background: #f7f4eced; box-shadow: 0 8px 24px #18251c0d; backdrop-filter: blur(13px); }
+.context-label { display: flex; min-width: 0; align-items: center; gap: 10px; }
+.context-dot { width: 8px; height: 8px; flex: 0 0 auto; border-radius: 50%; background: #3f865c; box-shadow: 0 0 0 5px #3f865c18; }
+.context-dot.closed { background: #9b8651; box-shadow: 0 0 0 5px #9b865118; }
+.context-label > span:last-child { display: grid; min-width: 0; }
+.context-label small { color: #92978f; font-size: .5rem; font-weight: 900; letter-spacing: .12em; text-transform: uppercase; }
+.context-label strong { overflow: hidden; max-width: 260px; color: #263128; font-family: Georgia,serif; font-size: .83rem; font-weight: 500; text-overflow: ellipsis; white-space: nowrap; }
+.league-context-bar label { display: flex; align-items: center; gap: 8px; margin-left: auto; }
+.league-context-bar label > span { color: #8b908a; font-size: .56rem; }
+.league-context-bar select { min-height: 34px; max-width: 260px; padding: 0 34px 0 11px; border: 1px solid #cbc4b5; border-radius: 8px; color: #334037; font-family: Georgia,serif; font-size: .72rem; background: #fffdf7; }
+.context-status { padding: 6px 9px; border-radius: 999px; color: #f3e4bf; font-size: .52rem; font-weight: 900; letter-spacing: .08em; text-transform: uppercase; background: #214530; }
+.context-status.closed { color: #68562b; background: #e7dab4; }
+.empty-context { color: #757c75; font-size: .72rem; }.league-context-bar > a { margin-left: auto; color: #2a5b3e; font-size: .7rem; font-weight: 800; text-decoration: none; }
+
 @media (max-width: 860px) {
   .app-header { gap: 12px; min-height: 72px; padding-inline: 13px; }
-  .brand-copy small, .user-email, .nav-index { display: none; }
+  .brand-copy small, .user-email { display: none; }
   .main-nav { margin-left: auto; }
   .main-nav a { padding-inline: 11px; }
   .session-actions { margin-left: 0; }
   .user-chip { padding: 4px; border: 0; background: transparent; }
   .mana-backdrop { top: 72px; }
+  .league-context-bar { top: 72px; padding-inline: 14px; }
+  .league-context-bar label > span, .context-status { display: none; }
+}
+
+@media (max-width: 700px) {
+  .main-nav { position: fixed; z-index: 40; right: 0; bottom: 0; left: 0; display: grid; height: 62px; grid-template-columns: repeat(4,1fr); gap: 0; color: #eee9dc; background: #0e1712f7; box-shadow: 0 -10px 30px #0b140d30; backdrop-filter: blur(14px); }
+  .main-nav a { justify-content: center; padding: 0 5px; border-radius: 0; font-size: .61rem; }
+  .main-nav a.active::after { right: 22%; top: 0; bottom: auto; left: 22%; }
+  .app-content { padding-bottom: 62px; }
 }
 
 @media (max-width: 560px) {
@@ -77,4 +98,9 @@
   .main-nav a { font-size: .66rem; }
   .logout-label { display: none; }
   .logout-button { padding: 5px; border-color: transparent; }
+  .league-context-bar { gap: 9px; }
+  .context-label small { display: none; }
+  .context-label strong { max-width: 120px; }
+  .league-context-bar label { min-width: 0; }
+  .league-context-bar select { width: 100%; max-width: none; }
 }

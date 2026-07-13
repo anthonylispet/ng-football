@@ -1,6 +1,22 @@
 {
   "rules": {
     ".read": "auth != null && auth.token.email_verified == true && (auth.token.email == 'anthony.lispet@gmail.com' || auth.token.email == 'pierre.simon@gmail.com')",
-    ".write": "auth != null && auth.token.email_verified == true && (auth.token.email == 'anthony.lispet@gmail.com' || auth.token.email == 'pierre.simon@gmail.com')"
+    "meta": {
+      ".write": "auth != null && auth.token.email_verified == true && (auth.token.email == 'anthony.lispet@gmail.com' || auth.token.email == 'pierre.simon@gmail.com')"
+    },
+    "decks": {
+      "$deckId": {
+        ".write": "auth != null && auth.token.email_verified == true && (auth.token.email == 'anthony.lispet@gmail.com' || auth.token.email == 'pierre.simon@gmail.com') && ((!data.exists() && newData.exists() && root.child('meta/schemaVersion').val() != 2) || (!data.exists() && newData.exists() && ((auth.token.email == 'anthony.lispet@gmail.com' && newData.child('player').val() == 'A') || (auth.token.email == 'pierre.simon@gmail.com' && newData.child('player').val() == 'P'))) || (data.exists() && newData.exists() && ((auth.token.email == 'anthony.lispet@gmail.com' && data.child('player').val() == 'A') || (auth.token.email == 'pierre.simon@gmail.com' && data.child('player').val() == 'P')) && newData.child('player').val() == data.child('player').val()))",
+        ".validate": "newData.hasChildren(['id', 'name', 'player', 'active', 'createdAt', 'updatedAt']) && newData.child('id').val() == $deckId && newData.child('name').isString() && newData.child('name').val().length >= 2 && newData.child('name').val().length <= 50 && (newData.child('player').val() == 'A' || newData.child('player').val() == 'P') && newData.child('active').isBoolean()"
+      }
+    },
+    "leagues": {
+      "$leagueId": {
+        ".write": "auth != null && auth.token.email_verified == true && (auth.token.email == 'anthony.lispet@gmail.com' || auth.token.email == 'pierre.simon@gmail.com')",
+        ".validate": "!newData.exists() || (newData.hasChildren(['id', 'name', 'status', 'createdAt', 'createdBy']) && newData.child('id').val() == $leagueId && newData.child('name').isString() && newData.child('name').val().length >= 3 && newData.child('name').val().length <= 60 && (newData.child('status').val() == 'draft' || newData.child('status').val() == 'active' || newData.child('status').val() == 'closed') && (newData.child('createdBy').val() == 'A' || newData.child('createdBy').val() == 'P'))"
+      }
+    },
+    "teams": { ".write": false },
+    "matchs": { ".write": false }
   }
 }

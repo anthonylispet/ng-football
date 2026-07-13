@@ -22,7 +22,8 @@
 .deck-choice.pierre { justify-content: flex-end; text-align: right; }
 .deck-choice.winner { border-color: #a98a43; background: linear-gradient(135deg, #fffaf0, #f3ead0); box-shadow: inset 0 0 0 1px #d8bd79, 0 8px 20px #8f773520; }
 .deck-choice.loser { opacity: .54; filter: saturate(.65); }
-.deck-choice:disabled { cursor: wait; }
+.deck-choice:disabled { cursor: default; }
+.game-card.saving .deck-choice:disabled { cursor: wait; }
 .deck-monogram { display: grid; width: 42px; height: 54px; flex: 0 0 auto; place-items: center; border: 1px solid #80504a; border-radius: 7px; color: #e0b19a; font-family: Georgia, serif; font-size: .72rem; background: radial-gradient(circle, #713534, #201619 72%); box-shadow: 3px 3px 0 #3b2120; }
 .pierre .deck-monogram { border-color: #4b7373; color: #a4d0c1; background: radial-gradient(circle, #315d59, #142321 72%); box-shadow: -3px 3px 0 #213c39; }
 .deck-copy { display: grid; min-width: 0; gap: 4px; }

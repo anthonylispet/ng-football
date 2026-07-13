@@ -18,12 +18,16 @@
 
     <nav class="main-nav" aria-label="Navigation principale">
       <a routerLink="/parties" routerLinkActive="active">
-        <span class="nav-index" aria-hidden="true">01</span>
         <span>Parties</span>
       </a>
       <a routerLink="/classement" routerLinkActive="active">
-        <span class="nav-index" aria-hidden="true">02</span>
         <span>Classement</span>
+      </a>
+      <a routerLink="/decks" routerLinkActive="active">
+        <span>Decks</span>
+      </a>
+      <a routerLink="/ligues" routerLinkActive="active">
+        <span>Ligues</span>
       </a>
     </nav>
 
@@ -41,7 +45,36 @@
     </div>
   </header>
 
+  @if (leaguesService.getLeagues() | async; as leagues) {
+    <div class="league-context-bar">
+      @if (leaguesService.selectedLeague$ | async; as selectedLeague) {
+        <div class="context-label">
+          <span class="context-dot" [class.closed]="selectedLeague.status === 'closed'"></span>
+          <span><small>Ligue affichée</small><strong>{{ selectedLeague.name }}</strong></span>
+        </div>
+        @if (leagues.length > 1) {
+          <label>
+            <span>Changer de ligue</span>
+            <select [value]="selectedLeague.id" (change)="selectLeague($event)">
+              @for (league of leagues; track league.id) {
+                <option [value]="league.id">{{ league.status === 'closed' ? 'Archive · ' : '' }}{{ league.name }}</option>
+              }
+            </select>
+          </label>
+        }
+        <span class="context-status" [class.closed]="selectedLeague.status === 'closed'">
+          {{ selectedLeague.status === 'draft' ? 'Préparation' : selectedLeague.status === 'active' ? 'En cours' : 'Historique' }}
+        </span>
+      } @else {
+        <span class="empty-context">Aucune ligue sélectionnée</span>
+        <a routerLink="/ligues">Créer la première ligue <span>→</span></a>
+      }
+    </div>
+  }
+
   <main class="app-content">
     <router-outlet></router-outlet>
   </main>
+
+  <app-confirmation-dialog></app-confirmation-dialog>
 </div>

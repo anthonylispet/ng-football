@@ -1,0 +1,65 @@
+<section class="page-shell">
+  <header class="page-heading">
+    <div>
+      <p class="eyebrow">Collection de {{ playerName }}</p>
+      <h1>Mes decks</h1>
+      <p>Prépare tes commandants, mets les anciens en réserve et choisis lesquels entreront dans l’arène.</p>
+    </div>
+    <div class="collection-count"><strong>{{ activeTeams.length }}</strong><span>decks disponibles</span></div>
+  </header>
+
+  @if (error) { <div class="error-message" role="alert">{{ error }}</div> }
+
+  <section class="create-panel" aria-labelledby="create-deck-title">
+    <div><p class="eyebrow">Nouveau prétendant</p><h2 id="create-deck-title">Ajouter un deck</h2></div>
+    <form [formGroup]="deckForm" (ngSubmit)="createTeam()">
+      <label for="deck-name">Nom du deck</label>
+      <div class="input-row">
+        <input id="deck-name" type="text" formControlName="name" maxlength="50" placeholder="Ex. Edgar Markov — encore lui" autocomplete="off">
+        <button type="submit">Ajouter <span aria-hidden="true">＋</span></button>
+      </div>
+      @if (deckForm.controls['name'].touched && deckForm.controls['name'].invalid) {
+        <small>Choisis un nom entre 2 et 50 caractères.</small>
+      }
+    </form>
+  </section>
+
+  @if (loading) {
+    <div class="loading-grid">@for (item of [1,2,3]; track item) { <span></span> }</div>
+  } @else {
+    <section class="deck-section">
+      <div class="section-title"><div><p class="eyebrow">Prêts à jouer</p><h2>Collection active</h2></div><span>{{ activeTeams.length }}</span></div>
+      <div class="deck-grid">
+        @for (team of activeTeams; track team.id) {
+          <article class="deck-card" [class.busy]="isBusy(team.id)">
+            <div class="deck-orb" aria-hidden="true">{{ team.name.charAt(0).toUpperCase() }}</div>
+            <div class="deck-copy">
+              @if (editingId === team.id) {
+                <input class="edit-input" [(ngModel)]="editingName" maxlength="50" aria-label="Nouveau nom du deck">
+                <div class="inline-actions"><button type="button" (click)="saveEdit(team)">Valider</button><button type="button" (click)="cancelEdit()">Annuler</button></div>
+              } @else {
+                <small>Deck Commander</small><h3>{{ team.name }}</h3>
+              }
+            </div>
+            @if (editingId !== team.id) {
+              <div class="card-actions"><button type="button" (click)="edit(team)">Renommer</button><button type="button" class="reserve" (click)="toggleActive(team)">Désactiver</button></div>
+            }
+          </article>
+        } @empty {
+          <div class="empty-card">Ta zone de commandement est vide. Ajoute ton premier deck.</div>
+        }
+      </div>
+    </section>
+
+    @if (inactiveTeams.length) {
+      <section class="deck-section reserve-section">
+        <div class="section-title"><div><p class="eyebrow">Les archives</p><h2>Decks en réserve</h2></div><span>{{ inactiveTeams.length }}</span></div>
+        <div class="reserve-list">
+          @for (team of inactiveTeams; track team.id) {
+            <article><div><small>Désactivé</small><strong>{{ team.name }}</strong></div><button type="button" (click)="toggleActive(team)">Réactiver</button></article>
+          }
+        </div>
+      </section>
+    }
+  }
+</section>

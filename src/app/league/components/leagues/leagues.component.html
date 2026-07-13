@@ -1,0 +1,78 @@
+<section class="page-shell">
+  <header class="page-heading">
+    <div><p class="eyebrow">Le multivers du tournoi</p><h1>Les ligues</h1><p>Créez jusqu’à trois tournois en parallèle, choisissez vos propres decks puis conservez chaque saison dans les archives.</p></div>
+    <div class="league-capacity"><div><strong>{{ openLeagues.length }}</strong><span>/ {{ leaguesService.maxOpenLeagues }}</span></div><small>ligues en cours</small></div>
+  </header>
+
+  @if (error) { <div class="error-message" role="alert">{{ error }}</div> }
+
+  <section class="create-panel" [class.disabled]="maxReached">
+    <div><p class="eyebrow">Nouvelle saison</p><h2>Créer une ligue</h2><span>Aucune confirmation n’est demandée à cette étape.</span></div>
+    <form [formGroup]="leagueForm" (ngSubmit)="createLeague()">
+      <label for="league-name">Nom de la ligue</label>
+      <div class="input-row"><input id="league-name" formControlName="name" maxlength="60" placeholder="Ex. La revanche d’Otrimi" autocomplete="off"><button type="submit" [disabled]="maxReached">Créer <span aria-hidden="true">＋</span></button></div>
+      @if (maxReached) { <small>La limite de trois ligues en cours est atteinte.</small> }
+    </form>
+  </section>
+
+  @if (loading) {
+    <div class="loading-grid">@for (item of [1,2,3]; track item) { <span></span> }</div>
+  } @else {
+    <section class="league-section">
+      <div class="section-title"><div><p class="eyebrow">Sur la table</p><h2>Ligues en cours</h2></div><span>{{ openLeagues.length }}</span></div>
+      <div class="league-grid">
+        @for (league of openLeagues; track league.id) {
+          <article class="league-card" [class.selected]="selectedLeague?.id === league.id">
+            <header>
+              <div><span class="status" [class.active]="league.status === 'active'">{{ league.status === 'draft' ? 'Préparation' : 'En cours' }}</span><h3>{{ league.name }}</h3><small>Créée par {{ playerName(league.createdBy) }} · {{ league.createdAt | date:'dd/MM/yyyy' }}</small></div>
+              @if (selectedLeague?.id === league.id) { <span class="current-mark">Sélectionnée</span> }
+            </header>
+
+            <div class="players-summary">
+              <div><span>A</span><p><strong>Anthony</strong><small>{{ league.selectedDeckIds.A.length }} deck{{ league.selectedDeckIds.A.length > 1 ? 's' : '' }}</small></p></div>
+              <i aria-hidden="true">VS</i>
+              <div><span>P</span><p><strong>Pierre</strong><small>{{ league.selectedDeckIds.P.length }} deck{{ league.selectedDeckIds.P.length > 1 ? 's' : '' }}</small></p></div>
+            </div>
+
+            @if (league.status === 'draft') {
+              <div class="deck-selection">
+                <div class="selection-title"><strong>Mes decks engagés</strong><span>Chaque joueur choisit les siens</span></div>
+                <div class="deck-pills">
+                  @for (team of selectableTeams(league); track team.id) {
+                    <button type="button" [class.selected]="isSelected(league, team.id)" [disabled]="isBusy(league.id)" (click)="toggleTeam(league, team)"><span>{{ isSelected(league, team.id) ? '✓' : '+' }}</span>{{ team.name }}</button>
+                  } @empty { <small class="no-decks">Aucun deck actif dans ta collection.</small> }
+                </div>
+                @if (isBusy(league.id)) { <small class="saving-selection">Enregistrement…</small> }
+              </div>
+            } @else {
+              <div class="progress-copy"><strong>{{ league.matches.length }} rencontres générées</strong><span>{{ league.matches.length ? 'Le tournoi est lancé' : 'Calendrier en préparation' }}</span></div>
+            }
+
+            <footer>
+              <button type="button" class="ghost" (click)="selectLeague(league.id)">Voir cette ligue</button>
+              @if (league.status === 'draft') { <button type="button" class="primary" [disabled]="!canStart(league)" (click)="startLeague(league)">Lancer le tournoi <span>→</span></button> }
+              @if (league.status === 'active') { <button type="button" class="primary" (click)="closeLeague(league)">Clôturer <span>→</span></button> }
+              <button type="button" class="delete" (click)="deleteLeague(league)" aria-label="Supprimer la ligue">Supprimer</button>
+            </footer>
+          </article>
+        } @empty { <div class="empty-card">Aucune ligue sur la table. Donnez un nom à la prochaine saison.</div> }
+      </div>
+    </section>
+
+    @if (closedLeagues.length) {
+      <section class="league-section history-section">
+        <div class="section-title"><div><p class="eyebrow">Le hall des souvenirs</p><h2>Historique</h2></div><span>{{ closedLeagues.length }}</span></div>
+        <div class="history-list">
+          @for (league of closedLeagues; track league.id) {
+            <article [class.selected]="selectedLeague?.id === league.id">
+              <div class="archive-mark" aria-hidden="true">◆</div>
+              <div class="archive-copy"><small>Clôturée le {{ league.closedAt | date:'dd/MM/yyyy' }}</small><strong>{{ league.name }}</strong><span>{{ league.matches.length }} rencontres · {{ deckCount(league) }} decks</span></div>
+              <button type="button" (click)="selectLeague(league.id)">Consulter</button>
+              <button type="button" class="delete" (click)="deleteLeague(league)">Supprimer</button>
+            </article>
+          }
+        </div>
+      </section>
+    }
+  }
+</section>

@@ -1,8 +1,10 @@
 import { ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
-import { Subject, takeUntil } from 'rxjs';
+import { combineLatest, Subject, takeUntil } from 'rxjs';
 import { Classement } from '../../models/classement';
+import { League } from '../../models/league';
 import { getPlayerName, PlayerCode } from '../../models/teams';
 import { ClassementService } from '../../services/classement.service';
+import { LeaguesService } from '../../services/leagues.service';
 
 @Component({
   standalone: false,
@@ -12,6 +14,7 @@ import { ClassementService } from '../../services/classement.service';
 })
 export class ClassementComponent implements OnInit, OnDestroy {
   classement: Classement[] = [];
+  league: League | null = null;
   loading = true;
   loadError = '';
 
@@ -19,6 +22,7 @@ export class ClassementComponent implements OnInit, OnDestroy {
 
   constructor(
     private readonly classementService: ClassementService,
+    private readonly leaguesService: LeaguesService,
     private readonly changeDetectorRef: ChangeDetectorRef,
   ) {}
 
@@ -51,9 +55,10 @@ export class ClassementComponent implements OnInit, OnDestroy {
     this.loading = true;
     this.loadError = '';
 
-    this.classementService.getClassement().pipe(takeUntil(this.destroyed$)).subscribe({
-      next: classement => {
+    combineLatest([this.classementService.getClassement(), this.leaguesService.selectedLeague$]).pipe(takeUntil(this.destroyed$)).subscribe({
+      next: ([classement, league]) => {
         this.classement = classement;
+        this.league = league;
         this.loading = false;
         this.changeDetectorRef.markForCheck();
       },

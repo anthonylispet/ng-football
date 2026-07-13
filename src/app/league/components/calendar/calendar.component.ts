@@ -1,8 +1,11 @@
 import { ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
 import { Subject, takeUntil } from 'rxjs';
 import { Match } from '../../models/match';
+import { League } from '../../models/league';
 import { Team } from '../../models/teams';
 import { CalendarService } from '../../services/calendar.service';
+import { ConfirmationService } from '../../services/confirmation.service';
+import { LeaguesService } from '../../services/leagues.service';
 
 type MatchFilter = 'all' | 'pending' | 'completed';
 
@@ -14,16 +17,19 @@ type MatchFilter = 'all' | 'pending' | 'completed';
 })
 export class CalendarComponent implements OnInit, OnDestroy {
   matches: Match[] = [];
+  league: League | null = null;
   filter: MatchFilter = 'all';
   loading = true;
   loadError = '';
   saveError = '';
-  savingMatchIds = new Set<number>();
+  savingMatchIds = new Set<string>();
 
   private readonly destroyed$ = new Subject<void>();
 
   constructor(
     private readonly calendarService: CalendarService,
+    private readonly leaguesService: LeaguesService,
+    private readonly confirmationService: ConfirmationService,
     private readonly changeDetectorRef: ChangeDetectorRef,
   ) {}
 
@@ -59,17 +65,28 @@ export class CalendarComponent implements OnInit, OnDestroy {
     this.filter = filter;
   }
 
-  isSaving(matchId: number): boolean {
+  isSaving(matchId: string): boolean {
     return this.savingMatchIds.has(matchId);
   }
 
-  async updateWinner(matchId: number, winner: Team | null): Promise<void> {
+  async updateWinner(matchId: string, winner: Team | null): Promise<void> {
+    if (!this.league || this.league.status !== 'active') return;
+    const leagueId = this.league.id;
     const matchIndex = this.matches.findIndex(match => match.matchId === matchId);
     if (matchIndex === -1 || this.isSaving(matchId)) {
       return;
     }
 
     const previousWinner = this.matches[matchIndex].winner;
+    const confirmed = await this.confirmationService.confirm({
+      title: winner ? 'Confirmer le vainqueur ?' : 'Annuler ce résultat ?',
+      message: winner
+        ? `« ${winner.name} » sera enregistré comme vainqueur de cette rencontre.`
+        : 'La rencontre repassera dans les parties à jouer.',
+      confirmLabel: winner ? 'Enregistrer' : 'Annuler le résultat',
+      tone: winner ? 'default' : 'danger',
+    });
+    if (!confirmed) return;
     this.matches = this.matches.map((match, index) =>
       index === matchIndex ? { ...match, winner } : match,
     );
@@ -77,7 +94,7 @@ export class CalendarComponent implements OnInit, OnDestroy {
     this.savingMatchIds = new Set(this.savingMatchIds).add(matchId);
 
     try {
-      await this.calendarService.updateWinner(matchIndex, winner);
+      await this.calendarService.updateWinner(leagueId, matchId, winner);
     } catch (error) {
       console.error('Impossible d’enregistrer le résultat.', error);
       this.matches = this.matches.map((match, index) =>
@@ -105,9 +122,10 @@ export class CalendarComponent implements OnInit, OnDestroy {
     this.loading = true;
     this.loadError = '';
 
-    this.calendarService.getMatchs().pipe(takeUntil(this.destroyed$)).subscribe({
-      next: matches => {
-        this.matches = matches;
+    this.leaguesService.selectedLeague$.pipe(takeUntil(this.destroyed$)).subscribe({
+      next: league => {
+        this.league = league;
+        this.matches = league?.matches ?? [];
         this.loading = false;
         this.changeDetectorRef.markForCheck();
       },

@@ -1,94 +1,39 @@
 <section class="page-shell">
   <header class="page-heading">
-    <div>
-      <p class="eyebrow">Saison Commander</p>
-      <h1>Le classement</h1>
-      <p>Les decks sont départagés par leurs victoires, puis par les parties disputées.</p>
-    </div>
-    <div class="season-stat">
-      <small>Parties résolues</small>
-      <strong>{{ totalGamesPlayed }}</strong>
-      <span>Le tournoi est en marche</span>
-    </div>
+    <div><p class="eyebrow">{{ league?.name || 'Saison Commander' }}</p><h1>Le classement</h1><p>Chaque ligue possède son propre palmarès. Les archives restent consultables sans polluer la saison actuelle.</p></div>
+    <div class="season-stat"><small>Parties résolues</small><strong>{{ totalGamesPlayed }}</strong><span>{{ league?.status === 'closed' ? 'Saison archivée' : 'Le tournoi est en marche' }}</span></div>
   </header>
 
   @if (loadError) {
-    <div class="status-card error-state" role="alert">
-      <span class="status-icon" aria-hidden="true">!</span>
-      <div>
-        <strong>Le classement est inaccessible</strong>
-        <p>{{ loadError }}</p>
-      </div>
-      <button type="button" (click)="retry()">Réessayer</button>
-    </div>
+    <div class="status-card error-state" role="alert"><span class="status-icon" aria-hidden="true">!</span><div><strong>Le classement est inaccessible</strong><p>{{ loadError }}</p></div><button type="button" (click)="retry()">Réessayer</button></div>
   } @else if (loading) {
-    <div class="ranking-loading" aria-label="Chargement du classement">
-      @for (placeholder of [1, 2, 3, 4, 5]; track placeholder) { <span></span> }
-    </div>
+    <div class="ranking-loading" aria-label="Chargement du classement">@for (placeholder of [1,2,3,4,5]; track placeholder) { <span></span> }</div>
   } @else if (classement.length) {
     <section class="podium-section" aria-labelledby="podium-title">
-      <div class="section-title">
-        <div>
-          <p class="eyebrow">En tête de table</p>
-          <h2 id="podium-title">Le podium</h2>
-        </div>
-        <span>Mis à jour en temps réel</span>
-      </div>
-
+      <div class="section-title"><div><p class="eyebrow">En tête de table</p><h2 id="podium-title">Le podium</h2></div><span>{{ league?.status === 'closed' ? 'Classement final' : 'Mis à jour en temps réel' }}</span></div>
       <div class="podium-grid">
         @for (standing of podium; track standing.team.id; let i = $index) {
           <article class="podium-card" [class.champion]="i === 0">
             <div class="rank-medallion">{{ i + 1 }}</div>
-            <div class="podium-copy">
-              <small>{{ playerName(standing.team.player) }}</small>
-              <strong>{{ standing.team.name }}</strong>
-              <span>{{ standing.nbPlayed }} partie{{ standing.nbPlayed > 1 ? 's' : '' }} jouée{{ standing.nbPlayed > 1 ? 's' : '' }}</span>
-            </div>
-            <div class="victory-count">
-              <strong>{{ standing.nbVictory }}</strong>
-              <small>victoire{{ standing.nbVictory > 1 ? 's' : '' }}</small>
-            </div>
+            <div class="podium-copy"><small>{{ playerName(standing.team.player) }}</small><strong>{{ standing.team.name }}</strong><span>{{ standing.nbPlayed }} partie{{ standing.nbPlayed > 1 ? 's' : '' }} jouée{{ standing.nbPlayed > 1 ? 's' : '' }}</span></div>
+            <div class="victory-count"><strong>{{ standing.nbVictory }}</strong><small>victoire{{ standing.nbVictory > 1 ? 's' : '' }}</small></div>
           </article>
         }
       </div>
     </section>
 
     <section class="ranking-section" aria-labelledby="ranking-title">
-      <div class="section-title compact">
-        <div>
-          <p class="eyebrow">Tous les commandants</p>
-          <h2 id="ranking-title">Table générale</h2>
-        </div>
-        <span>{{ classement.length }} decks engagés</span>
-      </div>
-
+      <div class="section-title compact"><div><p class="eyebrow">Tous les commandants</p><h2 id="ranking-title">Table générale</h2></div><span>{{ classement.length }} decks engagés</span></div>
       <div class="ranking-card">
-        <div class="table-header table-grid">
-          <span>Rang</span>
-          <span>Deck</span>
-          <span>Joueur</span>
-          <span>Parties</span>
-          <span>Victoires</span>
-        </div>
-
+        <div class="table-header table-grid"><span>Rang</span><span>Deck</span><span>Joueur</span><span>Parties</span><span>Victoires</span></div>
         @for (standing of classement; track standing.team.id; let i = $index) {
-          <div class="table-row table-grid" [class.podium]="i < 3">
-            <span class="rank"><i>{{ i + 1 }}</i></span>
-            <strong>{{ standing.team.name }}</strong>
-            <span class="player-name">{{ playerName(standing.team.player) }}</span>
-            <span>{{ standing.nbPlayed }}</span>
-            <span class="wins">{{ standing.nbVictory }}</span>
-          </div>
+          <div class="table-row table-grid" [class.podium]="i < 3"><span class="rank"><i>{{ i + 1 }}</i></span><strong>{{ standing.team.name }}</strong><span class="player-name">{{ playerName(standing.team.player) }}</span><span>{{ standing.nbPlayed }}</span><span class="wins">{{ standing.nbVictory }}</span></div>
         }
       </div>
     </section>
+  } @else if (league?.status === 'draft') {
+    <div class="status-card empty-state"><img src="assets/mana/U.svg" alt="" aria-hidden="true"><div><strong>Le classement attend le lancement</strong><p>Choisissez vos decks puis lancez cette ligue.</p></div><a routerLink="/ligues">Configurer la ligue</a></div>
   } @else {
-    <div class="status-card empty-state">
-      <img src="assets/mana/G.svg" alt="" aria-hidden="true">
-      <div>
-        <strong>Le classement attend ses premiers decks</strong>
-        <p>Les résultats des parties feront apparaître le podium.</p>
-      </div>
-    </div>
+    <div class="status-card empty-state"><img src="assets/mana/G.svg" alt="" aria-hidden="true"><div><strong>Le classement attend sa première ligue</strong><p>Créez un tournoi pour faire apparaître le prochain podium.</p></div><a routerLink="/ligues">Créer une ligue</a></div>
   }
 </section>

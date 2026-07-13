@@ -1,0 +1,19 @@
+@if (confirmationService.request$ | async; as request) {
+  <div class="dialog-backdrop" role="presentation" (click)="confirmationService.resolve(false)">
+    <section class="dialog-card" role="alertdialog" aria-modal="true" [attr.aria-labelledby]="'confirm-title'" (click)="$event.stopPropagation()">
+      <div class="dialog-sigil" [class.danger]="request.tone === 'danger'" aria-hidden="true">
+        {{ request.tone === 'danger' ? '!' : '✓' }}
+      </div>
+      <p class="eyebrow">Confirmation requise</p>
+      <h2 id="confirm-title">{{ request.title }}</h2>
+      <p class="dialog-message">{{ request.message }}</p>
+      <div class="dialog-actions">
+        <button type="button" class="secondary" (click)="confirmationService.resolve(false)">Annuler</button>
+        <button type="button" class="primary" [class.danger]="request.tone === 'danger'" (click)="confirmationService.resolve(true)">
+          {{ request.confirmLabel }}
+          <span aria-hidden="true">→</span>
+        </button>
+      </div>
+    </section>
+  </div>
+}

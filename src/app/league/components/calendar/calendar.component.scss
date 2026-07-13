@@ -39,6 +39,7 @@ h1 { margin: 0; font-family: Georgia, serif; font-size: clamp(3rem, 6vw, 5.3rem)
 .status-card p { margin: 5px 0 0; font-size: .78rem; }
 .status-icon { display: grid; width: 46px; height: 46px; place-items: center; border: 1px solid #b86963; border-radius: 50%; color: #9b403c; font-family: Georgia, serif; font-size: 1.2rem; }
 .status-card button { min-height: 39px; margin-left: 12px; padding: 0 15px; border: 1px solid #66766a; border-radius: 9px; color: #fff; font-size: .7rem; font-weight: 800; background: #20382a; }
+.status-card a { min-height: 39px; margin-left: 12px; padding: 0 15px; border-radius: 9px; color: #fff; font-size: .7rem; font-weight: 800; line-height: 39px; text-decoration: none; background: #20382a; }
 
 .loading-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; }
 .loading-card { display: grid; min-height: 210px; align-content: center; gap: 14px; padding: 28px; border: 1px solid #ddd7ca; border-radius: 16px; background: #faf8f2; }

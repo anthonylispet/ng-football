@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, NgZone } from '@angular/core';
 import {
   GoogleAuthProvider,
   User,
@@ -20,17 +20,17 @@ export class AuthService {
 
   readonly user$: Observable<User | null> = this.userSubject.asObservable();
 
-  constructor() {
+  constructor(private readonly zone: NgZone) {
     this.googleProvider.setCustomParameters({ prompt: 'select_account' });
 
     onAuthStateChanged(firebaseAuth, (user) => {
       if (user && !this.isAllowed(user)) {
         void signOut(firebaseAuth);
-        this.userSubject.next(null);
+        this.zone.run(() => this.userSubject.next(null));
         return;
       }
 
-      this.userSubject.next(user);
+      this.zone.run(() => this.userSubject.next(user));
     });
   }
 
@@ -41,10 +41,13 @@ export class AuthService {
       await signOut(firebaseAuth);
       throw new UnauthorizedGoogleAccountError();
     }
+
+    this.zone.run(() => this.userSubject.next(result.user));
   }
 
   async logout(): Promise<void> {
     await signOut(firebaseAuth);
+    this.zone.run(() => this.userSubject.next(null));
   }
 
   private isAllowed(user: User): boolean {

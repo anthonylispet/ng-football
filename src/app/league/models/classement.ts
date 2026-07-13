@@ -1,9 +1,7 @@
-import {Team} from "./teams";
+import { Team } from './teams';
 
-export class Classement {
-  team : Team;
+export interface Classement {
+  team: Team;
   nbPlayed: number;
   nbVictory: number;
-
-  constructor(){}
 }

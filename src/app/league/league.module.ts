@@ -5,7 +5,10 @@ import {LeagueRoutingModule} from "./league-routing.module";
 import { CalendarComponent } from './components/calendar/calendar.component';
 import { ClassementComponent } from './components/classement/classement.component';
 import { MatchComponent } from './components/calendar/match/match.component';
-import {ReactiveFormsModule} from "@angular/forms";
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { DecksComponent } from './components/decks/decks.component';
+import { LeaguesComponent } from './components/leagues/leagues.component';
+import { ConfirmationDialogComponent } from './components/confirmation-dialog/confirmation-dialog.component';
 
 
 
@@ -14,12 +17,16 @@ import {ReactiveFormsModule} from "@angular/forms";
     LeagueComponent,
     CalendarComponent,
     ClassementComponent,
-    MatchComponent
+    MatchComponent,
+    DecksComponent,
+    LeaguesComponent,
+    ConfirmationDialogComponent
   ],
     imports: [
         CommonModule,
         LeagueRoutingModule,
-        ReactiveFormsModule
+        ReactiveFormsModule,
+        FormsModule
     ]
 })
 export class LeagueModule { }
