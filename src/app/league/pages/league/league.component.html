@@ -20,6 +20,9 @@
       <a routerLink="/parties" routerLinkActive="active">
         <span>Parties</span>
       </a>
+      <a routerLink="/rapide" routerLinkActive="active">
+        <span>Rapide</span>
+      </a>
       <a routerLink="/classement" routerLinkActive="active">
         <span>Classement</span>
       </a>
@@ -45,7 +48,7 @@
     </div>
   </header>
 
-  @if (leaguesService.getLeagues() | async; as leagues) {
+  @if (!isQuickMatchRoute && (leaguesService.getLeagues() | async); as leagues) {
     <div class="league-context-bar">
       @if (leaguesService.selectedLeague$ | async; as selectedLeague) {
         <div class="context-label">

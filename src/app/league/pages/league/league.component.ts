@@ -17,6 +17,10 @@ export class LeagueComponent {
     private readonly router: Router,
   ){}
 
+  get isQuickMatchRoute(): boolean {
+    return this.router.url.split('?')[0] === '/rapide';
+  }
+
   selectLeague(event: Event): void {
     this.leaguesService.selectLeague((event.target as HTMLSelectElement).value);
   }

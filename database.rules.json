@@ -16,6 +16,12 @@
         ".validate": "!newData.exists() || (newData.hasChildren(['id', 'name', 'status', 'createdAt', 'createdBy']) && newData.child('id').val() == $leagueId && newData.child('name').isString() && newData.child('name').val().length >= 3 && newData.child('name').val().length <= 60 && (newData.child('status').val() == 'draft' || newData.child('status').val() == 'active' || newData.child('status').val() == 'closed') && (newData.child('createdBy').val() == 'A' || newData.child('createdBy').val() == 'P'))"
       }
     },
+    "quickMatches": {
+      ".write": "auth != null && auth.token.email_verified == true && (auth.token.email == 'anthony.lispet@gmail.com' || auth.token.email == 'pierre.simon7041@gmail.com' || auth.token.email == 'pierresimon7041@gmail.com')",
+      "$matchId": {
+        ".validate": "!newData.exists() || (newData.hasChildren(['id', 'createdAt', 'createdBy', 'deckA', 'deckP', 'probabilityA', 'probabilityP']) && newData.child('id').val() == $matchId && newData.child('createdAt').isNumber() && (newData.child('createdBy').val() == 'A' || newData.child('createdBy').val() == 'P') && newData.child('deckA/id').isString() && newData.child('deckA/name').isString() && newData.child('deckA/player').val() == 'A' && newData.child('deckP/id').isString() && newData.child('deckP/name').isString() && newData.child('deckP/player').val() == 'P' && newData.child('probabilityA').isNumber() && newData.child('probabilityA').val() >= 0 && newData.child('probabilityA').val() <= 1 && newData.child('probabilityP').isNumber() && newData.child('probabilityP').val() >= 0 && newData.child('probabilityP').val() <= 1 && (!newData.child('winnerDeckId').exists() || newData.child('winnerDeckId').val() == newData.child('deckA/id').val() || newData.child('winnerDeckId').val() == newData.child('deckP/id').val()))"
+      }
+    },
     "teams": { ".write": false },
     "matchs": { ".write": false }
   }

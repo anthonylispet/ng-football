@@ -9,6 +9,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { DecksComponent } from './components/decks/decks.component';
 import { LeaguesComponent } from './components/leagues/leagues.component';
 import { ConfirmationDialogComponent } from './components/confirmation-dialog/confirmation-dialog.component';
+import { QuickMatchesComponent } from './components/quick-matches/quick-matches.component';
 
 
 
@@ -20,7 +21,8 @@ import { ConfirmationDialogComponent } from './components/confirmation-dialog/co
     MatchComponent,
     DecksComponent,
     LeaguesComponent,
-    ConfirmationDialogComponent
+    ConfirmationDialogComponent,
+    QuickMatchesComponent
   ],
     imports: [
         CommonModule,

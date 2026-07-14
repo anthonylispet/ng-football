@@ -5,6 +5,7 @@ import {CalendarComponent} from "./components/calendar/calendar.component";
 import {ClassementComponent} from "./components/classement/classement.component";
 import { DecksComponent } from './components/decks/decks.component';
 import { LeaguesComponent } from './components/leagues/leagues.component';
+import { QuickMatchesComponent } from './components/quick-matches/quick-matches.component';
 
 const routes: Routes = [
   { path: '', component:LeagueComponent , children: [
@@ -14,6 +15,7 @@ const routes: Routes = [
       { path: 'classement', component:ClassementComponent },
       { path: 'decks', component: DecksComponent },
       { path: 'ligues', component: LeaguesComponent },
+      { path: 'rapide', component: QuickMatchesComponent },
     ]},
   { path: '**', redirectTo :'/' }
 
