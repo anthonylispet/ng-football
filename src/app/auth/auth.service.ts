@@ -8,13 +8,10 @@ import {
 } from 'firebase/auth';
 import { Observable, ReplaySubject } from 'rxjs';
 import { firebaseAuth } from '../firebase';
+import { getPlayerCodeFromEmail } from '../league/models/teams';
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
-  private readonly allowedEmails = new Set([
-    'anthony.lispet@gmail.com',
-    'pierre.simon7041@gmail.com',
-  ]);
   private readonly googleProvider = new GoogleAuthProvider();
   private readonly userSubject = new ReplaySubject<User | null>(1);
 
@@ -51,7 +48,7 @@ export class AuthService {
   }
 
   private isAllowed(user: User): boolean {
-    return user.email !== null && this.allowedEmails.has(user.email.toLowerCase());
+    return getPlayerCodeFromEmail(user.email) !== null;
   }
 }
 

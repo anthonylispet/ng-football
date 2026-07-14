@@ -19,13 +19,16 @@ export function getPlayerName(player: PlayerCode): string {
 }
 
 export function getPlayerCodeFromEmail(email: string | null | undefined): PlayerCode | null {
-  const normalizedEmail = email?.toLowerCase();
+  const normalizedEmail = email?.trim().toLowerCase();
 
   if (normalizedEmail === 'anthony.lispet@gmail.com') {
     return 'A';
   }
 
-  if (normalizedEmail === 'pierre.simon7041@gmail.com') {
+  if (
+    normalizedEmail === 'pierre.simon7041@gmail.com' ||
+    normalizedEmail === 'pierresimon7041@gmail.com'
+  ) {
     return 'P';
   }
 
