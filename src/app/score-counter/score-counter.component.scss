@@ -1,6 +1,7 @@
 :host {
   display: block;
   min-height: 100dvh;
+  overflow-x: clip;
   color: #252322;
   background: #f5f1e8;
 }

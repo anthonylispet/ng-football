@@ -9,3 +9,131 @@ body {
 body {
   margin: 0;
 }
+
+/* Score Pop: global to keep the standalone component within Angular's strict style budget. */
+.score-sort {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 10px;
+  margin: -6px 0 12px;
+}
+
+.score-sort > span {
+  color: #8b837c;
+  font-size: .58rem;
+  font-weight: 900;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+
+.score-sort > div {
+  display: flex;
+  gap: 4px;
+  padding: 4px;
+  border: 1px solid #ded8cf;
+  border-radius: 12px;
+  background: #e9e4da;
+}
+
+.score-sort button {
+  min-height: 34px;
+  padding: 0 11px;
+  border: 0;
+  border-radius: 8px;
+  color: #777069;
+  font-size: .62rem;
+  font-weight: 900;
+  background: transparent;
+  touch-action: manipulation;
+}
+
+.score-sort button.selected {
+  color: #fff;
+  background: #302c29;
+}
+
+.evolution-toggle {
+  width: fit-content;
+  margin: 5px 0 0 5px;
+  padding: 3px 0;
+  border: 0;
+  color: var(--player);
+  font-size: .58rem;
+  font-weight: 900;
+  background: transparent;
+  touch-action: manipulation;
+}
+
+.evolution-toggle span { margin-left: 3px; }
+
+.score-evolution {
+  display: grid;
+  min-width: 0;
+  grid-column: 2 / 6;
+  grid-row: 2;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: center;
+  gap: 10px;
+  padding-top: 8px;
+  border-top: 1px solid #eee8df;
+}
+
+.score-evolution > span {
+  color: #948c84;
+  font-size: .54rem;
+  font-weight: 900;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+
+.score-path {
+  display: flex;
+  min-width: 0;
+  align-items: center;
+  gap: 5px;
+  overflow-x: auto;
+  padding: 2px 1px 4px;
+  scrollbar-width: thin;
+}
+
+.score-path b {
+  display: grid;
+  min-width: 29px;
+  height: 26px;
+  flex: 0 0 auto;
+  place-items: center;
+  padding: 0 7px;
+  border: 1px solid #ddd6cc;
+  border-radius: 8px;
+  color: #6f6862;
+  font-size: .68rem;
+  font-variant-numeric: tabular-nums;
+  background: #f8f5ef;
+}
+
+.score-path b.current {
+  border-color: var(--player);
+  color: #fff;
+  background: var(--player);
+}
+
+.score-path i { color: #b4aca4; font-size: .66rem; font-style: normal; }
+
+@media (min-width: 901px) {
+  .player-row:has(.score-evolution) { min-height: 148px; }
+}
+
+@media (max-width: 900px) {
+  .score-evolution { grid-column: 2 / 5; grid-row: 3; }
+  .player-row:has(.score-evolution) { min-height: 190px; }
+}
+
+@media (max-width: 620px) {
+  .score-sort { display: grid; justify-content: stretch; margin-top: -4px; }
+  .score-sort > div { display: grid; grid-template-columns: repeat(3, 1fr); }
+  .score-sort > span { display: none; }
+  .score-sort button { min-height: 39px; padding-inline: 4px; }
+  .score-evolution { grid-column: 1 / -1; grid-row: 4; }
+  .player-row:has(.score-evolution) { min-height: 0; }
+}

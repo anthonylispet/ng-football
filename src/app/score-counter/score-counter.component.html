@@ -33,8 +33,17 @@
       </button>
     </div>
 
+    <div class="score-sort" aria-label="Trier les joueurs">
+      <span>Trier par</span>
+      <div>
+        <button type="button" [class.selected]="state.sortMode === 'players'" (click)="setSortMode('players')">Joueurs</button>
+        <button type="button" [class.selected]="state.sortMode === 'highest'" (click)="setSortMode('highest')">Plus gros score</button>
+        <button type="button" [class.selected]="state.sortMode === 'lowest'" (click)="setSortMode('lowest')">Plus petit score</button>
+      </div>
+    </div>
+
     <section class="players-list" aria-label="Scores des joueurs">
-      @for (player of state.players; track player.id; let index = $index) {
+      @for (player of displayedPlayers; track player.id; let index = $index) {
         <article class="player-row {{ player.color }}" [class.leader]="leaderId === player.id" [class.winner]="winnerId === player.id">
           <div class="rank" aria-label="Position {{ index + 1 }}">{{ index + 1 }}</div>
           <div class="player-identity">
@@ -42,6 +51,9 @@
             @if (winnerId === player.id) { <span class="status winner-status">Objectif atteint !</span> }
             @else if (leaderId === player.id) { <span class="status">En tête</span> }
             @else { <span class="status">{{ entryCount(player) }} saisie{{ entryCount(player) > 1 ? 's' : '' }}</span> }
+            <button type="button" class="evolution-toggle" (click)="toggleEvolution(player)" [attr.aria-expanded]="isEvolutionOpen(player)" [attr.aria-label]="(isEvolutionOpen(player) ? 'Masquer' : 'Voir') + ' l’évolution de ' + player.name">
+              {{ isEvolutionOpen(player) ? 'Masquer' : 'Voir l’évolution' }} <span aria-hidden="true">{{ isEvolutionOpen(player) ? '↑' : '↓' }}</span>
+            </button>
           </div>
 
           <div class="score-display">
@@ -62,6 +74,18 @@
               <button type="button" (click)="quickAdd(player, 10)">+10</button>
               <button type="button" (click)="quickAdd(player, 25)">+25</button>
               <button type="button" (click)="quickAdd(player, 50)">+50</button>
+            </div>
+          }
+
+          @if (isEvolutionOpen(player)) {
+            <div class="score-evolution">
+              <span>Évolution</span>
+              <div class="score-path" [attr.aria-label]="'Évolution du score de ' + player.name">
+                @for (value of scorePath(player); track $index; let last = $last) {
+                  @if ($index > 0) { <i aria-hidden="true">→</i> }
+                  <b [class.current]="last">{{ value }}</b>
+                }
+              </div>
             </div>
           }
 

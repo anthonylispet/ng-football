@@ -1,6 +1,7 @@
 import { Component, HostListener, OnDestroy, OnInit } from '@angular/core';
 
 type EntryMode = 'add' | 'set';
+type SortMode = 'players' | 'highest' | 'lowest';
 
 interface ScorePlayer {
   id: string;
@@ -11,6 +12,7 @@ interface ScorePlayer {
 }
 
 interface ScoreChange {
+  playerId?: string;
   playerName: string;
   previousTotal: number;
   newTotal: number;
@@ -29,6 +31,7 @@ interface ScoreState {
   target: number;
   targetEnabled: boolean;
   entryMode: EntryMode;
+  sortMode: SortMode;
 }
 
 @Component({
@@ -49,6 +52,7 @@ export class ScoreCounterComponent implements OnInit, OnDestroy {
   historyOpen = false;
   confirmReset = false;
   isFullscreen = false;
+  expandedPlayerIds = new Set<string>();
 
   ngOnInit(): void {
     this.previousTitle = document.title;
@@ -67,6 +71,12 @@ export class ScoreCounterComponent implements OnInit, OnDestroy {
 
   get sortedPlayers(): ScorePlayer[] {
     return [...this.state.players].sort((a, b) => b.total - a.total);
+  }
+
+  get displayedPlayers(): ScorePlayer[] {
+    if (this.state.sortMode === 'highest') return [...this.state.players].sort((a, b) => b.total - a.total);
+    if (this.state.sortMode === 'lowest') return [...this.state.players].sort((a, b) => a.total - b.total);
+    return this.state.players;
   }
 
   get leaderId(): string | null {
@@ -93,6 +103,7 @@ export class ScoreCounterComponent implements OnInit, OnDestroy {
     if (this.state.players.length <= 1) return;
     this.snapshot();
     this.state.players = this.state.players.filter(candidate => candidate.id !== player.id);
+    this.expandedPlayerIds.delete(player.id);
     this.persist();
   }
 
@@ -116,6 +127,7 @@ export class ScoreCounterComponent implements OnInit, OnDestroy {
     player.total = newTotal;
     player.draft = '';
     this.recordRound([{
+      playerId: player.id,
       playerName: player.name,
       previousTotal,
       newTotal,
@@ -130,6 +142,7 @@ export class ScoreCounterComponent implements OnInit, OnDestroy {
     this.snapshot();
     player.total += amount;
     this.recordRound([{
+      playerId: player.id,
       playerName: player.name,
       previousTotal,
       newTotal: player.total,
@@ -142,6 +155,11 @@ export class ScoreCounterComponent implements OnInit, OnDestroy {
   setEntryMode(mode: EntryMode): void {
     this.state.entryMode = mode;
     this.state.players.forEach(player => player.draft = '');
+    this.persist();
+  }
+
+  setSortMode(mode: SortMode): void {
+    this.state.sortMode = mode;
     this.persist();
   }
 
@@ -177,6 +195,7 @@ export class ScoreCounterComponent implements OnInit, OnDestroy {
       player.draft = '';
     });
     this.state.rounds = [];
+    this.expandedPlayerIds.clear();
     this.confirmReset = false;
     this.settingsOpen = false;
     this.persist();
@@ -193,7 +212,28 @@ export class ScoreCounterComponent implements OnInit, OnDestroy {
 
   entryCount(player: ScorePlayer): number {
     return this.state.rounds.reduce((count, round) =>
-      count + round.changes.filter(change => change.playerName === player.name).length, 0);
+      count + round.changes.filter(change => this.belongsToPlayer(change, player)).length, 0);
+  }
+
+  scorePath(player: ScorePlayer): number[] {
+    const changes = this.state.rounds
+      .slice()
+      .reverse()
+      .flatMap(round => round.changes)
+      .filter(change => this.belongsToPlayer(change, player));
+    if (!changes.length) return [player.total];
+    return [changes[0].previousTotal, ...changes.map(change => change.newTotal)];
+  }
+
+  isEvolutionOpen(player: ScorePlayer): boolean {
+    return this.expandedPlayerIds.has(player.id);
+  }
+
+  toggleEvolution(player: ScorePlayer): void {
+    const expanded = new Set(this.expandedPlayerIds);
+    if (expanded.has(player.id)) expanded.delete(player.id);
+    else expanded.add(player.id);
+    this.expandedPlayerIds = expanded;
   }
 
   async toggleFullscreen(): Promise<void> {
@@ -217,6 +257,7 @@ export class ScoreCounterComponent implements OnInit, OnDestroy {
       target: 500,
       targetEnabled: true,
       entryMode: 'add',
+      sortMode: 'players',
     };
   }
 
@@ -249,7 +290,13 @@ export class ScoreCounterComponent implements OnInit, OnDestroy {
       const saved = localStorage.getItem(this.storageKey);
       if (!saved) return;
       const parsed = JSON.parse(saved) as ScoreState;
-      if (Array.isArray(parsed.players) && parsed.players.length && Array.isArray(parsed.rounds)) this.state = parsed;
+      if (Array.isArray(parsed.players) && parsed.players.length && Array.isArray(parsed.rounds)) {
+        parsed.sortMode ??= 'players';
+        parsed.rounds.forEach(round => round.changes.forEach(change => {
+          change.playerId ??= parsed.players.find(player => player.name === change.playerName)?.id;
+        }));
+        this.state = parsed;
+      }
     } catch {
       localStorage.removeItem(this.storageKey);
     }
@@ -257,5 +304,9 @@ export class ScoreCounterComponent implements OnInit, OnDestroy {
 
   private haptic(): void {
     navigator.vibrate?.(8);
+  }
+
+  private belongsToPlayer(change: ScoreChange, player: ScorePlayer): boolean {
+    return change.playerId ? change.playerId === player.id : change.playerName === player.name;
   }
 }

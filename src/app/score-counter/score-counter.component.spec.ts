@@ -40,4 +40,46 @@ describe('ScoreCounterComponent', () => {
     component.undo();
     expect(component.state.players[3].total).toBe(0);
   });
+
+  it('shows each total a player passed through', () => {
+    const component = new ScoreCounterComponent();
+    const player = component.state.players[0];
+
+    component.quickAdd(player, 25);
+    component.quickAdd(player, 50);
+    component.setEntryMode('set');
+    player.draft = '40';
+    component.submitScore(player);
+
+    expect(component.scorePath(player)).toEqual([0, 25, 75, 40]);
+  });
+
+  it('sorts players by highest, lowest or original player order', () => {
+    const component = new ScoreCounterComponent();
+    component.quickAdd(component.state.players[0], 20);
+    component.quickAdd(component.state.players[1], 50);
+    component.quickAdd(component.state.players[2], 10);
+
+    component.setSortMode('highest');
+    expect(component.displayedPlayers.map(player => player.total)).toEqual([50, 20, 10]);
+
+    component.setSortMode('lowest');
+    expect(component.displayedPlayers.map(player => player.total)).toEqual([10, 20, 50]);
+
+    component.setSortMode('players');
+    expect(component.displayedPlayers.map(player => player.total)).toEqual([20, 50, 10]);
+  });
+
+  it('opens and closes one player evolution independently', () => {
+    const component = new ScoreCounterComponent();
+    const first = component.state.players[0];
+    const second = component.state.players[1];
+
+    component.toggleEvolution(first);
+    expect(component.isEvolutionOpen(first)).toBe(true);
+    expect(component.isEvolutionOpen(second)).toBe(false);
+
+    component.toggleEvolution(first);
+    expect(component.isEvolutionOpen(first)).toBe(false);
+  });
 });
