@@ -1,0 +1,86 @@
+<section class="counter-shell" [class.settings-visible]="settingsOpen">
+  <header class="counter-toolbar">
+    <a class="home-button" routerLink="/parties" aria-label="Retour au tournoi" title="Retour au tournoi">F</a>
+    <div class="game-title">
+      <span aria-hidden="true">✦</span>
+      <div><strong>Table de jeu</strong><small>Partie sauvegardée automatiquement</small></div>
+    </div>
+
+    <div class="toolbar-actions">
+      <button type="button" class="icon-button" [disabled]="!canUndo" (click)="undo()" aria-label="Annuler la dernière action" title="Annuler">↶</button>
+      <button type="button" class="icon-button fullscreen-button" (click)="toggleFullscreen()" [attr.aria-label]="isFullscreen ? 'Quitter le plein écran' : 'Passer en plein écran'" title="Plein écran">{{ isFullscreen ? '↙' : '⛶' }}</button>
+      <button type="button" class="settings-button" [class.active]="settingsOpen" (click)="settingsOpen = !settingsOpen" [attr.aria-expanded]="settingsOpen">
+        <span aria-hidden="true">⚙</span><span>Réglages</span>
+      </button>
+    </div>
+  </header>
+
+  <div class="players-grid players-{{ state.players.length }}">
+    @for (player of state.players; track trackPlayer($index); let playerIndex = $index) {
+      <article class="player-card {{ player.theme }}" [class.in-danger]="player.life <= 10">
+        <input class="player-name" [value]="player.name" maxlength="18" (change)="updatePlayerName(playerIndex, $event)" [attr.aria-label]="'Nom du joueur ' + (playerIndex + 1)">
+
+        <div class="life-control">
+          <button type="button" class="life-side life-minus" (click)="adjustLife(playerIndex, -1)" [attr.aria-label]="'Retirer un point de vie à ' + player.name">
+            <span>−</span><small>1</small>
+          </button>
+          <output class="life-total" [attr.aria-label]="player.life + ' points de vie'">{{ player.life }}</output>
+          <button type="button" class="life-side life-plus" (click)="adjustLife(playerIndex, 1)" [attr.aria-label]="'Ajouter un point de vie à ' + player.name">
+            <span>+</span><small>1</small>
+          </button>
+        </div>
+
+        <div class="counter-list" aria-label="Compteurs secondaires">
+          @for (counter of state.counters; track $index; let counterIndex = $index) {
+            <div class="mini-counter">
+              <span class="counter-label"><b aria-hidden="true">{{ counter.icon }}</b>{{ counter.name }}</span>
+              <div class="counter-stepper">
+                <button type="button" (click)="adjustCounter(playerIndex, counterIndex, -1)" [disabled]="player.counters[counterIndex] === 0" [attr.aria-label]="'Retirer un compteur ' + counter.name + ' à ' + player.name">−</button>
+                <output>{{ player.counters[counterIndex] }}</output>
+                <button type="button" (click)="adjustCounter(playerIndex, counterIndex, 1)" [attr.aria-label]="'Ajouter un compteur ' + counter.name + ' à ' + player.name">+</button>
+              </div>
+            </div>
+          }
+        </div>
+      </article>
+    }
+  </div>
+
+  @if (settingsOpen) {
+    <aside class="settings-panel" aria-label="Réglages de la partie">
+      <div class="settings-group">
+        <span class="setting-label">Nombre de joueurs</span>
+        <div class="segmented">
+          @for (count of [2, 3, 4]; track count) {
+            <button type="button" [class.selected]="state.players.length === count" (click)="setPlayerCount(count)">{{ count }}</button>
+          }
+        </div>
+      </div>
+
+      <div class="settings-group">
+        <span class="setting-label">Points de vie initiaux</span>
+        <div class="segmented life-presets">
+          @for (life of [20, 30, 40]; track life) {
+            <button type="button" [class.selected]="state.startingLife === life" (click)="setStartingLife(life)">{{ life }}</button>
+          }
+        </div>
+      </div>
+
+      <div class="settings-group counter-names">
+        <span class="setting-label">Noms des 3 compteurs</span>
+        @for (counter of state.counters; track $index; let counterIndex = $index) {
+          <label><span>{{ counter.icon }}</span><input [value]="counter.name" maxlength="14" (change)="updateCounterName(counterIndex, $event)" [attr.aria-label]="'Nom du compteur ' + (counterIndex + 1)"></label>
+        }
+      </div>
+
+      <div class="reset-zone">
+        @if (confirmReset) {
+          <p>Remettre toutes les valeurs à zéro ?</p>
+          <div><button type="button" (click)="confirmReset = false">Annuler</button><button type="button" class="confirm" (click)="resetGame()">Oui, recommencer</button></div>
+        } @else {
+          <button type="button" class="reset-button" (click)="requestReset()">↻ Recommencer la partie</button>
+        }
+      </div>
+    </aside>
+  }
+</section>
