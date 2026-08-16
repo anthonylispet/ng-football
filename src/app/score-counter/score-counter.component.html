@@ -1,0 +1,123 @@
+<div class="score-app">
+  <header class="topbar">
+    <div class="brand" aria-label="Score Pop">
+      <span class="brand-mark"><i></i><i></i><i></i></span>
+      <div><strong>Score Pop</strong><small>Compteur de partie</small></div>
+    </div>
+
+    <div class="top-actions">
+      <button type="button" class="icon-action" [disabled]="!canUndo" (click)="undo()" aria-label="Annuler la dernière action" title="Annuler">↶</button>
+      <button type="button" class="icon-action hide-phone" (click)="toggleFullscreen()" [attr.aria-label]="isFullscreen ? 'Quitter le plein écran' : 'Passer en plein écran'" title="Plein écran">{{ isFullscreen ? '↙' : '⛶' }}</button>
+      <button type="button" class="text-action" [class.active]="historyOpen" (click)="historyOpen = !historyOpen; settingsOpen = false"><span>≡</span> Historique</button>
+      <button type="button" class="icon-action" [class.active]="settingsOpen" (click)="settingsOpen = !settingsOpen; historyOpen = false" aria-label="Réglages" title="Réglages">⚙</button>
+    </div>
+  </header>
+
+  <main>
+    <section class="score-heading">
+      <div>
+        <p class="eyebrow">La partie en cours</p>
+        <h1>Qui prend la tête&nbsp;?</h1>
+      </div>
+      @if (state.targetEnabled) {
+        <div class="target-pill"><span>Objectif</span><strong>{{ state.target }}</strong> pts</div>
+      }
+    </section>
+
+    <div class="mode-switch" aria-label="Mode de saisie">
+      <button type="button" [class.selected]="state.entryMode === 'add'" (click)="setEntryMode('add')">
+        <span class="mode-icon">＋</span><span><strong>Ajouter des points</strong><small>Le total se calcule tout seul</small></span>
+      </button>
+      <button type="button" [class.selected]="state.entryMode === 'set'" (click)="setEntryMode('set')">
+        <span class="mode-icon">＝</span><span><strong>Définir le total</strong><small>Remplacer le score actuel</small></span>
+      </button>
+    </div>
+
+    <section class="players-list" aria-label="Scores des joueurs">
+      @for (player of state.players; track player.id; let index = $index) {
+        <article class="player-row {{ player.color }}" [class.leader]="leaderId === player.id" [class.winner]="winnerId === player.id">
+          <div class="rank" aria-label="Position {{ index + 1 }}">{{ index + 1 }}</div>
+          <div class="player-identity">
+            <input [value]="player.name" maxlength="24" (change)="updateName(player, $event)" [attr.aria-label]="'Nom de ' + player.name">
+            @if (winnerId === player.id) { <span class="status winner-status">Objectif atteint !</span> }
+            @else if (leaderId === player.id) { <span class="status">En tête</span> }
+            @else { <span class="status">{{ entryCount(player) }} saisie{{ entryCount(player) > 1 ? 's' : '' }}</span> }
+          </div>
+
+          <div class="score-display">
+            <strong>{{ player.total }}</strong><span>pts</span>
+            @if (state.targetEnabled) { <i><b [style.width.%]="progress(player)"></b></i> }
+          </div>
+
+          <div class="score-entry">
+            <label>
+              <span>{{ state.entryMode === 'add' ? 'Points à ajouter' : 'Nouveau total' }}</span>
+              <input type="number" inputmode="numeric" [value]="player.draft" (input)="updateDraft(player, $event)" (keydown.enter)="submitScore(player)" [placeholder]="state.entryMode === 'add' ? '+ 0' : player.total.toString()" [attr.aria-label]="(state.entryMode === 'add' ? 'Points à ajouter à ' : 'Nouveau total de ') + player.name">
+            </label>
+            <button type="button" class="submit-score" (click)="submitScore(player)" [attr.aria-label]="state.entryMode === 'add' ? 'Ajouter les points à ' + player.name : 'Définir le total de ' + player.name">{{ state.entryMode === 'add' ? '+' : '✓' }}</button>
+          </div>
+
+          @if (state.entryMode === 'add') {
+            <div class="quick-points" aria-label="Ajouts rapides">
+              <button type="button" (click)="quickAdd(player, 10)">+10</button>
+              <button type="button" (click)="quickAdd(player, 25)">+25</button>
+              <button type="button" (click)="quickAdd(player, 50)">+50</button>
+            </div>
+          }
+
+          <button type="button" class="remove-player" [disabled]="state.players.length <= 1" (click)="removePlayer(player)" [attr.aria-label]="'Retirer ' + player.name" title="Retirer ce joueur">×</button>
+        </article>
+      }
+    </section>
+
+    <form class="add-player" (submit)="$event.preventDefault(); addPlayer()">
+      <span aria-hidden="true">＋</span>
+      <label><span>Ajouter un joueur</span><input [value]="newPlayerName" (input)="newPlayerName = $any($event.target).value" maxlength="24" placeholder="Prénom ou pseudo" aria-label="Nom du nouveau joueur"></label>
+      <button type="submit">Ajouter</button>
+    </form>
+  </main>
+
+  @if (historyOpen) {
+    <aside class="drawer history-drawer" aria-label="Historique des scores">
+      <header><div><small>Journal de partie</small><h2>Historique</h2></div><button type="button" (click)="historyOpen = false" aria-label="Fermer l’historique">×</button></header>
+      <div class="history-list">
+        @for (round of state.rounds; track round.id) {
+          <article>
+            <time>{{ formatTime(round.createdAt) }}</time>
+            @for (change of round.changes; track $index) {
+              <div><span>{{ change.playerName }}</span><strong [class.negative]="change.difference < 0">{{ change.difference >= 0 ? '+' : '' }}{{ change.difference }}</strong><b>{{ change.newTotal }} pts</b></div>
+            }
+          </article>
+        } @empty {
+          <div class="empty-drawer"><span>○</span><strong>Aucun score saisi</strong><p>Les modifications apparaîtront ici.</p></div>
+        }
+      </div>
+    </aside>
+  }
+
+  @if (settingsOpen) {
+    <aside class="drawer settings-drawer" aria-label="Réglages de la partie">
+      <header><div><small>Personnalisation</small><h2>Réglages</h2></div><button type="button" (click)="settingsOpen = false" aria-label="Fermer les réglages">×</button></header>
+      <div class="setting-row">
+        <div><strong>Objectif de points</strong><small>Signaler le premier joueur qui l’atteint</small></div>
+        <button type="button" class="toggle" [class.on]="state.targetEnabled" (click)="toggleTarget()" [attr.aria-pressed]="state.targetEnabled"><i></i></button>
+      </div>
+      @if (state.targetEnabled) {
+        <label class="target-setting"><span>Score à atteindre</span><input type="number" min="1" inputmode="numeric" [value]="state.target" (change)="setTarget($event)"></label>
+        <div class="target-presets">
+          @for (target of [100, 250, 500, 1000]; track target) {
+            <button type="button" [class.selected]="state.target === target" (click)="setTargetValue(target)">{{ target }}</button>
+          }
+        </div>
+      }
+      <div class="reset-area">
+        @if (confirmReset) {
+          <p>Effacer les scores et l’historique ?</p>
+          <div><button type="button" (click)="confirmReset = false">Annuler</button><button type="button" class="danger" (click)="resetGame()">Recommencer</button></div>
+        } @else {
+          <button type="button" class="reset-button" (click)="confirmReset = true">↻ Recommencer la partie</button>
+        }
+      </div>
+    </aside>
+  }
+</div>

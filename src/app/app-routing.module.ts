@@ -11,6 +11,11 @@ const routes: Routes = [
       .then(component => component.LifeCounterComponent),
   },
   {
+    path: 'scores',
+    loadComponent: () => import('./score-counter/score-counter.component')
+      .then(component => component.ScoreCounterComponent),
+  },
+  {
     path: '',
     canActivate: [authGuard],
     loadChildren: () => import('./league/league.module').then(m => m.LeagueModule),
