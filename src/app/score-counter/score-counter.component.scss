@@ -134,6 +134,11 @@ h1 { margin: 0; color: #252322; font-size: clamp(1.75rem, 4vw, 3.1rem); font-wei
 .score-path i { color: #aaa198; font-size: .65rem; font-style: normal; }
 .remove-player { width: 28px; height: 34px; border: 0; border-radius: 8px; color: #aaa39c; font-size: 1.25rem; background: transparent; }
 .remove-player:hover { color: #d5443a; background: #fff0ee; }.remove-player:disabled { visibility: hidden; }
+.remove-confirmation { display: flex; grid-column: 2 / -1; align-items: center; justify-content: space-between; gap: 10px; padding: 8px 10px; border: 1px solid #efc4bf; border-radius: 11px; background: #fff3f1; }
+.remove-confirmation > span { color: #8e3f38; font-size: .7rem; font-weight: 850; }
+.remove-confirmation > div { display: flex; gap: 5px; }
+.remove-confirmation button { min-height: 36px; padding: 0 11px; border: 1px solid #d9d1c8; border-radius: 9px; color: #675f59; font-size: .64rem; font-weight: 850; background: #fff; }
+.remove-confirmation .confirm-remove { border-color: #d84d42; color: #fff; background: #d84d42; }
 
 .add-player { display: grid; grid-template-columns: 44px 1fr auto; align-items: center; gap: 12px; margin-top: 16px; padding: 14px 16px; border: 2px dashed #d0c9bd; border-radius: 18px; background: #ffffff70; }
 .add-player > span { display: grid; width: 42px; height: 42px; place-items: center; border-radius: 13px; color: #fff; font-size: 1.35rem; background: #2d2926; }
@@ -180,6 +185,7 @@ h1 { margin: 0; color: #252322; font-size: clamp(1.75rem, 4vw, 3.1rem); font-wei
   .quick-points { grid-column: 3 / 5; grid-row: 2; gap: 3px; }.quick-points button { min-width: 0; min-height: 42px; padding: 0 3px; border-radius: 8px; font-size: .57rem; }
   .score-evolution { grid-column: 1 / -1; padding: 8px; }.score-path { gap: 4px; }.score-path b { padding: 3px 6px; }
   .remove-player { grid-column: 4; grid-row: 1; width: 24px; height: 30px; }
+  .remove-confirmation { grid-column: 1 / -1; padding: 6px 7px; }.remove-confirmation > span { overflow: hidden; font-size: .64rem; text-overflow: ellipsis; white-space: nowrap; }.remove-confirmation button { min-height: 40px; padding: 0 9px; font-size: .6rem; }
   .add-player { grid-template-columns: 32px 1fr auto; gap: 7px; margin-top: 9px; padding: 7px 8px; border-radius: 12px; }.add-player > span { width: 31px; height: 31px; border-radius: 9px; font-size: 1rem; }.add-player label span { display: none; }.add-player input { min-height: 38px; font-size: .78rem; }.add-player button { min-height: 40px; padding-inline: 11px; border-radius: 9px; }
   .drawer { top: 70px; max-height: calc(100dvh - 80px); }
 }

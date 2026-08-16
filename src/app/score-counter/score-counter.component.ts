@@ -51,6 +51,7 @@ export class ScoreCounterComponent implements OnInit, OnDestroy {
   settingsOpen = false;
   historyOpen = false;
   confirmReset = false;
+  pendingRemovalId: string | null = null;
   isFullscreen = false;
   expandedPlayerIds = new Set<string>();
 
@@ -104,7 +105,17 @@ export class ScoreCounterComponent implements OnInit, OnDestroy {
     this.snapshot();
     this.state.players = this.state.players.filter(candidate => candidate.id !== player.id);
     this.expandedPlayerIds.delete(player.id);
+    this.pendingRemovalId = null;
     this.persist();
+  }
+
+  requestPlayerRemoval(player: ScorePlayer): void {
+    if (this.state.players.length <= 1) return;
+    this.pendingRemovalId = player.id;
+  }
+
+  cancelPlayerRemoval(): void {
+    this.pendingRemovalId = null;
   }
 
   updateName(player: ScorePlayer, event: Event): void {

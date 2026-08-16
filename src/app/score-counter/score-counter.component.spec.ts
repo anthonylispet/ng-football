@@ -41,6 +41,24 @@ describe('ScoreCounterComponent', () => {
     expect(component.state.players[3].total).toBe(0);
   });
 
+  it('requires confirmation before removing a player', () => {
+    const component = new ScoreCounterComponent();
+    const player = component.state.players[0];
+
+    component.requestPlayerRemoval(player);
+    expect(component.pendingRemovalId).toBe(player.id);
+    expect(component.state.players).toContain(player);
+
+    component.cancelPlayerRemoval();
+    expect(component.pendingRemovalId).toBeNull();
+    expect(component.state.players).toContain(player);
+
+    component.requestPlayerRemoval(player);
+    component.removePlayer(player);
+    expect(component.pendingRemovalId).toBeNull();
+    expect(component.state.players).not.toContain(player);
+  });
+
   it('shows each total a player passed through', () => {
     const component = new ScoreCounterComponent();
     const player = component.state.players[0];

@@ -89,7 +89,17 @@
             </div>
           }
 
-          <button type="button" class="remove-player" [disabled]="state.players.length <= 1" (click)="removePlayer(player)" [attr.aria-label]="'Retirer ' + player.name" title="Retirer ce joueur">×</button>
+          @if (pendingRemovalId === player.id) {
+            <div class="remove-confirmation" role="alert">
+              <span>Supprimer {{ player.name }}&nbsp;?</span>
+              <div>
+                <button type="button" (click)="cancelPlayerRemoval()">Annuler</button>
+                <button type="button" class="confirm-remove" (click)="removePlayer(player)">Supprimer</button>
+              </div>
+            </div>
+          } @else {
+            <button type="button" class="remove-player" [disabled]="state.players.length <= 1" (click)="requestPlayerRemoval(player)" [attr.aria-label]="'Retirer ' + player.name" title="Retirer ce joueur">×</button>
+          }
         </article>
       }
     </section>
