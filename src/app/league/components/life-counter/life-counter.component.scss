@@ -212,7 +212,30 @@ button { touch-action: manipulation; -webkit-tap-highlight-color: transparent; }
   .counter-stepper { grid-template-columns: minmax(20px, 1fr) auto minmax(20px, 1fr); }
   .counter-stepper button { min-width: 0; }
   .counter-stepper output { min-width: 18px; }
-  .settings-panel { top: 56px; max-height: calc(100% - 66px); overflow: auto; }
+  .settings-panel {
+    display: flex;
+    flex-direction: column;
+    top: 54px;
+    right: 4px;
+    bottom: 4px;
+    left: 4px;
+    width: auto;
+    max-height: none;
+    gap: 13px;
+    padding: 15px;
+    overflow-x: hidden;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    -webkit-overflow-scrolling: touch;
+  }
+  .settings-panel .reset-zone {
+    position: sticky;
+    bottom: -15px;
+    z-index: 1;
+    margin: auto -4px 0;
+    padding: 13px 4px 15px;
+    background: #17221d;
+  }
 }
 
 @media (max-width: 380px) and (orientation: portrait) {
@@ -252,6 +275,25 @@ button { touch-action: manipulation; -webkit-tap-highlight-color: transparent; }
   .counter-stepper { margin-top: 0; }
   .counter-stepper button { min-height: 27px; }
   .life-total { font-size: clamp(3rem, 14vh, 4.5rem); }
+  .settings-panel {
+    display: grid;
+    top: 49px;
+    right: 4px;
+    bottom: 4px;
+    width: min(520px, calc(100% - 8px));
+    max-height: none;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    align-content: start;
+    gap: 10px 14px;
+    padding: 12px;
+    overflow-y: auto;
+  }
+  .settings-panel .counter-names { grid-row: span 2; }
+  .settings-panel .reset-zone { grid-column: 1 / -1; }
+  .settings-panel .segmented button { min-height: 34px; }
+  .settings-panel .counter-names input { min-height: 34px; }
+  .settings-panel .reset-zone { padding-top: 8px; }
+  .settings-panel .reset-zone button { min-height: 36px; }
 }
 
 @media (max-height: 610px) {
