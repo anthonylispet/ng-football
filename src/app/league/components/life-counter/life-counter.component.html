@@ -1,4 +1,4 @@
-<section class="counter-shell" [class.settings-visible]="settingsOpen">
+<section class="counter-shell" [class.settings-visible]="settingsOpen" [class.is-fullscreen]="isFullscreen">
   <header class="counter-toolbar">
     <a class="home-button" routerLink="/parties" aria-label="Retour au tournoi" title="Retour au tournoi">F</a>
     <div class="game-title">
@@ -33,7 +33,7 @@
         <div class="counter-list" aria-label="Compteurs secondaires">
           @for (counter of state.counters; track $index; let counterIndex = $index) {
             <div class="mini-counter">
-              <span class="counter-label"><b aria-hidden="true">{{ counter.icon }}</b>{{ counter.name }}</span>
+              <span class="counter-label" [title]="counter.name"><b aria-hidden="true">{{ counter.icon }}</b><span>{{ counter.name }}</span></span>
               <div class="counter-stepper">
                 <button type="button" (click)="adjustCounter(playerIndex, counterIndex, -1)" [disabled]="player.counters[counterIndex] === 0" [attr.aria-label]="'Retirer un compteur ' + counter.name + ' à ' + player.name">−</button>
                 <output>{{ player.counters[counterIndex] }}</output>

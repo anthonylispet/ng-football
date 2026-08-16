@@ -2,6 +2,7 @@
   display: block;
   height: 100dvh;
   min-height: 480px;
+  overflow: hidden;
   color: #f5f0e5;
   background: #0c120f;
 }
@@ -13,6 +14,7 @@ button { touch-action: manipulation; -webkit-tap-highlight-color: transparent; }
   position: relative;
   display: grid;
   height: 100%;
+  box-sizing: border-box;
   grid-template-rows: 56px minmax(0, 1fr);
   overflow: hidden;
   background:
@@ -143,13 +145,13 @@ button { touch-action: manipulation; -webkit-tap-highlight-color: transparent; }
   pointer-events: none;
 }
 
-.counter-list { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); border-top: 1px solid #ffffff12; background: #070c09a6; }
+.counter-list { display: grid; width: 100%; min-width: 0; grid-template-columns: repeat(3, minmax(0, 1fr)); overflow: hidden; border-top: 1px solid #ffffff12; background: #070c09a6; }
 .mini-counter { min-width: 0; padding: 7px clamp(4px, 1vw, 10px) 8px; border-right: 1px solid #ffffff10; }
 .mini-counter:last-child { border-right: 0; }
 .counter-label { display: flex; min-width: 0; align-items: center; justify-content: center; gap: 4px; overflow: hidden; color: #89968d; font-size: clamp(.48rem, 1vw, .62rem); font-weight: 800; text-overflow: ellipsis; text-transform: uppercase; white-space: nowrap; }
 .counter-label b { color: var(--accent); font-size: .75rem; }
-.counter-stepper { display: grid; grid-template-columns: minmax(34px, 1fr) auto minmax(34px, 1fr); align-items: center; margin-top: 3px; }
-.counter-stepper button { min-height: 38px; border: 0; border-radius: 8px; color: #c8d0ca; font-size: 1.25rem; background: #ffffff09; }
+.counter-stepper { display: grid; width: 100%; min-width: 0; grid-template-columns: minmax(34px, 1fr) auto minmax(34px, 1fr); align-items: center; margin-top: 3px; }
+.counter-stepper button { min-width: 0; min-height: 38px; padding-inline: 0; border: 0; border-radius: 8px; color: #c8d0ca; font-size: 1.25rem; background: #ffffff09; }
 .counter-stepper button:active { background: rgba(var(--accent-rgb), .25); }
 .counter-stepper button:disabled { opacity: .2; }
 .counter-stepper output { min-width: 29px; color: white; font-size: clamp(1rem, 2.3vw, 1.45rem); font-weight: 800; font-variant-numeric: tabular-nums; text-align: center; }
@@ -199,7 +201,9 @@ button { touch-action: manipulation; -webkit-tap-highlight-color: transparent; }
   .players-2 { grid-template-columns: 1fr; grid-template-rows: repeat(2, minmax(0, 1fr)); }
   .players-3 .player-card:first-child { grid-column: auto; }
   .players-3 { grid-template-columns: 1fr; grid-template-rows: repeat(3, minmax(0, 1fr)); }
+  .players-4 { grid-template-columns: 1fr; grid-template-rows: repeat(4, minmax(0, 1fr)); }
   .player-card { grid-template-rows: 29px minmax(48px, 1fr) auto; border-radius: 11px; }
+  .life-side { min-width: 0; }
   .life-total { font-size: clamp(3.2rem, 10vh, 5.5rem); }
   .counter-stepper button { min-height: 32px; }
   .mini-counter { padding-block: 4px; }
@@ -209,6 +213,45 @@ button { touch-action: manipulation; -webkit-tap-highlight-color: transparent; }
   .counter-stepper button { min-width: 0; }
   .counter-stepper output { min-width: 18px; }
   .settings-panel { top: 56px; max-height: calc(100% - 66px); overflow: auto; }
+}
+
+@media (max-width: 380px) and (orientation: portrait) {
+  .counter-toolbar { gap: 8px; padding-inline: 8px; }
+  .game-title { gap: 6px; }
+  .game-title div { display: none; }
+  .toolbar-actions { gap: 6px; }
+  .players-grid { gap: 3px; padding: 3px; }
+  .player-card { grid-template-rows: 27px minmax(43px, 1fr) auto; }
+  .player-name { padding-block: 3px; }
+  .life-total { font-size: clamp(3.5rem, 10vh, 4.7rem); }
+  .mini-counter { padding-block: 3px; }
+  .counter-stepper button { min-height: 30px; }
+}
+
+@media (max-width: 700px) {
+  .counter-shell.is-fullscreen {
+    padding-top: env(safe-area-inset-top);
+    padding-right: env(safe-area-inset-right);
+    padding-bottom: env(safe-area-inset-bottom);
+    padding-left: env(safe-area-inset-left);
+  }
+  .counter-shell.is-fullscreen .home-button { display: none; }
+  .counter-shell.is-fullscreen .fullscreen-button { display: block; }
+  .counter-shell.is-fullscreen .game-title div { display: none; }
+}
+
+@media (max-height: 480px) and (orientation: landscape) {
+  :host { min-height: 0; }
+  .counter-shell { grid-template-rows: 46px minmax(0, 1fr); }
+  .counter-toolbar { padding-block: 3px; }
+  .game-title small { display: none; }
+  .players-grid { gap: 3px; padding: 3px; }
+  .player-card { grid-template-rows: 25px minmax(38px, 1fr) auto; border-radius: 10px; }
+  .player-name { padding-block: 2px; }
+  .mini-counter { padding-block: 2px; }
+  .counter-stepper { margin-top: 0; }
+  .counter-stepper button { min-height: 27px; }
+  .life-total { font-size: clamp(3rem, 14vh, 4.5rem); }
 }
 
 @media (max-height: 610px) {
