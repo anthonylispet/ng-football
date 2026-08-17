@@ -98,6 +98,24 @@ button { touch-action: manipulation; -webkit-tap-highlight-color: transparent; }
 .player-card.grove { --accent: #65ad6f; --accent-rgb: 101,173,111; }
 .player-card.amethyst { --accent: #b58bd5; --accent-rgb: 181,139,213; }
 .player-card.in-danger { animation: danger-pulse 2.2s ease-in-out infinite; }
+.player-card.starter-highlight {
+  z-index: 2;
+  border-color: #ffe49a;
+  animation: starter-flash .3s ease-out both;
+  box-shadow: inset 0 0 42px rgba(var(--accent-rgb), .42), 0 0 0 3px #f6d77d, 0 0 34px #f0ca5eaa;
+}
+.player-card.starter-selected { border-color: #f0d477; box-shadow: inset 0 0 28px rgba(var(--accent-rgb), .2), 0 0 0 2px #d9bb60, 0 8px 28px #0005; }
+.starter-badge { position: absolute; z-index: 3; top: 8px; right: 10px; padding: 4px 7px; border: 1px solid #d9bb60; border-radius: 99px; color: #ffeba9; font-size: .52rem; font-weight: 900; letter-spacing: .05em; text-transform: uppercase; background: #463818e8; box-shadow: 0 3px 12px #0007; }
+
+.starter-picker { position: absolute; z-index: 3; top: 56px; right: 0; bottom: 0; left: 0; display: grid; place-items: center; background: radial-gradient(circle, #0002, #0007); pointer-events: none; }
+.starter-picker button { display: grid; min-width: min(230px, calc(100vw - 44px)); min-height: 150px; place-items: center; align-content: center; gap: 7px; padding: 20px; border: 2px solid #d8b85c; border-radius: 24px; color: #fff5cf; background: radial-gradient(circle at 50% 20%, #554520, #17201a 72%); box-shadow: inset 0 0 0 4px #0d130f, 0 18px 60px #000c, 0 0 32px #d5b55344; pointer-events: auto; }
+.starter-picker button > span { color: #f5d675; font-size: 2rem; text-shadow: 0 0 18px #e6c65c; }
+.starter-picker button strong { font-family: Georgia, serif; font-size: 1.2rem; font-weight: 500; }
+.starter-picker button small { color: #aeb8b0; font-size: .65rem; }
+.starter-picker button:active { transform: scale(.96); background: radial-gradient(circle at 50% 20%, #705a27, #17201a 72%); }
+.starter-picker.is-rolling { background: transparent; }
+.starter-rolling { align-self: center; display: flex; align-items: center; gap: 8px; padding: 10px 15px; border: 1px solid #c9ac57; border-radius: 99px; color: #f4e6b5; font-size: .72rem; background: #101812e8; box-shadow: 0 8px 30px #0009; }
+.starter-rolling span { color: #f5d675; animation: starter-spin .7s linear infinite; }
 
 .player-name {
   z-index: 2;
@@ -190,6 +208,8 @@ button { touch-action: manipulation; -webkit-tap-highlight-color: transparent; }
 @keyframes danger-pulse {
   50% { border-color: #f08871; box-shadow: inset 0 0 30px #b9301726, 0 0 16px #d33a1d28; }
 }
+@keyframes starter-flash { from { filter: brightness(1.75); transform: scale(.985); } to { filter: brightness(1.08); transform: scale(1); } }
+@keyframes starter-spin { to { transform: rotate(360deg); } }
 
 @media (max-width: 700px) and (orientation: portrait) {
   .counter-shell { grid-template-rows: 50px minmax(0, 1fr); }
@@ -203,6 +223,9 @@ button { touch-action: manipulation; -webkit-tap-highlight-color: transparent; }
   .players-3 { grid-template-columns: 1fr; grid-template-rows: repeat(3, minmax(0, 1fr)); }
   .players-4 { grid-template-columns: 1fr; grid-template-rows: repeat(4, minmax(0, 1fr)); }
   .player-card { grid-template-rows: 29px minmax(48px, 1fr) auto; border-radius: 11px; }
+  .starter-picker { top: 50px; }
+  .starter-picker button { min-width: min(210px, calc(100vw - 36px)); min-height: 128px; border-radius: 19px; }
+  .starter-badge { top: 5px; right: 6px; padding: 3px 5px; font-size: .43rem; }
   .life-side { min-width: 0; }
   .life-total { font-size: clamp(3.2rem, 10vh, 5.5rem); }
   .counter-stepper button { min-height: 32px; }
@@ -270,6 +293,8 @@ button { touch-action: manipulation; -webkit-tap-highlight-color: transparent; }
   .game-title small { display: none; }
   .players-grid { gap: 3px; padding: 3px; }
   .player-card { grid-template-rows: 25px minmax(38px, 1fr) auto; border-radius: 10px; }
+  .starter-picker { top: 46px; }
+  .starter-picker button { min-height: 112px; }
   .player-name { padding-block: 2px; }
   .mini-counter { padding-block: 2px; }
   .counter-stepper { margin-top: 0; }
@@ -305,5 +330,5 @@ button { touch-action: manipulation; -webkit-tap-highlight-color: transparent; }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .player-card.in-danger { animation: none; }
+  .player-card.in-danger, .player-card.starter-highlight, .starter-rolling span { animation: none; }
 }

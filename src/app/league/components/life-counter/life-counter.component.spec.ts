@@ -1,8 +1,9 @@
-import { beforeEach, describe, expect, it } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { LifeCounterComponent } from './life-counter.component';
 
 describe('LifeCounterComponent', () => {
   beforeEach(() => localStorage.clear());
+  afterEach(() => vi.useRealTimers());
 
   it('adjusts life and can undo the last change', () => {
     const component = new LifeCounterComponent();
@@ -35,5 +36,32 @@ describe('LifeCounterComponent', () => {
     component.setPlayerCount(4);
     expect(component.state.players).toHaveLength(4);
     expect(component.state.players[2].life).toBe(40);
+  });
+
+  it('animates the draw and stores the selected starting player', async () => {
+    vi.useFakeTimers();
+    const component = new LifeCounterComponent();
+
+    const draw = component.chooseStartingPlayer(2);
+    expect(component.isChoosingStarter).toBe(true);
+    await vi.runAllTimersAsync();
+    await draw;
+
+    expect(component.isChoosingStarter).toBe(false);
+    expect(component.highlightedStarterIndex).toBe(2);
+    expect(component.state.startingPlayerIndex).toBe(2);
+  });
+
+  it('offers a new draw after restarting the game', async () => {
+    vi.useFakeTimers();
+    const component = new LifeCounterComponent();
+    const draw = component.chooseStartingPlayer(1);
+    await vi.runAllTimersAsync();
+    await draw;
+
+    component.resetGame();
+
+    expect(component.state.startingPlayerIndex).toBeNull();
+    expect(component.highlightedStarterIndex).toBeNull();
   });
 });

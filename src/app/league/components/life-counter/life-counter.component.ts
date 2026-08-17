@@ -1,4 +1,4 @@
-import { Component, HostListener, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, HostListener, OnDestroy, OnInit } from '@angular/core';
 import { RouterLink } from '@angular/router';
 
 interface CounterDefinition {
@@ -15,6 +15,7 @@ interface CounterPlayer {
 
 interface CounterState {
   startingLife: number;
+  startingPlayerIndex: number | null;
   players: CounterPlayer[];
   counters: CounterDefinition[];
 }
@@ -26,19 +27,28 @@ interface CounterState {
   templateUrl: './life-counter.component.html',
   styleUrls: ['./life-counter.component.scss'],
 })
-export class LifeCounterComponent implements OnInit {
+export class LifeCounterComponent implements OnInit, OnDestroy {
   private readonly storageKey = 'magic-life-counter-v1';
   private readonly themes = ['ember', 'tide', 'grove', 'amethyst'];
   private history: CounterState[] = [];
+  private destroyed = false;
 
   state: CounterState = this.createState(4, 40);
   settingsOpen = false;
   confirmReset = false;
   isFullscreen = false;
+  isChoosingStarter = false;
+  highlightedStarterIndex: number | null = null;
+
+  constructor(private readonly changeDetector?: ChangeDetectorRef) {}
 
   ngOnInit(): void {
     this.restore();
     this.isFullscreen = !!document.fullscreenElement;
+  }
+
+  ngOnDestroy(): void {
+    this.destroyed = true;
   }
 
   get canUndo(): boolean {
@@ -69,7 +79,38 @@ export class LifeCounterComponent implements OnInit {
       this.state.players.push(this.createPlayer(index, this.state.startingLife));
     }
     this.state.players = this.state.players.slice(0, count);
+    this.state.startingPlayerIndex = null;
+    this.highlightedStarterIndex = null;
     this.persist();
+  }
+
+  async chooseStartingPlayer(forcedIndex?: number): Promise<void> {
+    if (this.isChoosingStarter || this.state.players.length === 0) return;
+
+    this.settingsOpen = false;
+    this.isChoosingStarter = true;
+    this.state.startingPlayerIndex = null;
+    const playerCount = this.state.players.length;
+    const randomIndex = Math.floor(Math.random() * playerCount);
+    const targetIndex = forcedIndex === undefined ? randomIndex : Math.max(0, Math.min(playerCount - 1, forcedIndex));
+    const steps = playerCount * 3 + targetIndex + 1;
+
+    for (let step = 0; step < steps; step += 1) {
+      if (this.destroyed) return;
+      this.highlightedStarterIndex = step % playerCount;
+      this.changeDetector?.detectChanges();
+      this.vibrate(step > steps - 4 ? 16 : 7);
+      const progress = step / Math.max(1, steps - 1);
+      await this.delay(70 + Math.round(progress * progress * 190));
+    }
+
+    if (this.destroyed) return;
+    this.highlightedStarterIndex = targetIndex;
+    this.state.startingPlayerIndex = targetIndex;
+    this.isChoosingStarter = false;
+    this.changeDetector?.detectChanges();
+    this.persist();
+    this.vibrate([40, 35, 90]);
   }
 
   setStartingLife(life: number): void {
@@ -112,6 +153,9 @@ export class LifeCounterComponent implements OnInit {
       player.life = this.state.startingLife;
       player.counters = this.state.counters.map(() => 0);
     });
+    this.state.startingPlayerIndex = null;
+    this.highlightedStarterIndex = null;
+    this.isChoosingStarter = false;
     this.confirmReset = false;
     this.settingsOpen = false;
     this.persist();
@@ -138,6 +182,7 @@ export class LifeCounterComponent implements OnInit {
   private createState(playerCount: number, startingLife: number): CounterState {
     return {
       startingLife,
+      startingPlayerIndex: null,
       players: Array.from({ length: playerCount }, (_, index) => this.createPlayer(index, startingLife)),
       counters: [
         { name: 'Poison', icon: '☠' },
@@ -171,6 +216,9 @@ export class LifeCounterComponent implements OnInit {
       if (!saved) return;
       const parsed = JSON.parse(saved) as CounterState;
       if (parsed.players?.length >= 2 && parsed.players.length <= 4 && parsed.counters?.length === 3) {
+        parsed.startingPlayerIndex = Number.isInteger(parsed.startingPlayerIndex) && parsed.startingPlayerIndex! < parsed.players.length
+          ? parsed.startingPlayerIndex
+          : null;
         this.state = parsed;
       }
     } catch {
@@ -179,6 +227,18 @@ export class LifeCounterComponent implements OnInit {
   }
 
   private haptic(): void {
-    navigator.vibrate?.(8);
+    this.vibrate(8);
+  }
+
+  private delay(duration: number): Promise<void> {
+    return new Promise(resolve => setTimeout(resolve, duration));
+  }
+
+  private vibrate(pattern: number | number[]): void {
+    try {
+      navigator.vibrate?.(pattern);
+    } catch {
+      // Haptics are optional and can be rejected after the initial user gesture.
+    }
   }
 }

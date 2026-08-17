@@ -17,7 +17,10 @@
 
   <div class="players-grid players-{{ state.players.length }}">
     @for (player of state.players; track trackPlayer($index); let playerIndex = $index) {
-      <article class="player-card {{ player.theme }}" [class.in-danger]="player.life <= 10">
+      <article class="player-card {{ player.theme }}" [class.in-danger]="player.life <= 10" [class.starter-highlight]="highlightedStarterIndex === playerIndex" [class.starter-selected]="state.startingPlayerIndex === playerIndex && !isChoosingStarter">
+        @if (state.startingPlayerIndex === playerIndex && !isChoosingStarter) {
+          <span class="starter-badge">✦ Commence</span>
+        }
         <input class="player-name" [value]="player.name" maxlength="18" (change)="updatePlayerName(playerIndex, $event)" [attr.aria-label]="'Nom du joueur ' + (playerIndex + 1)">
 
         <div class="life-control">
@@ -45,6 +48,20 @@
       </article>
     }
   </div>
+
+  @if (state.startingPlayerIndex === null || isChoosingStarter) {
+    <div class="starter-picker" [class.is-rolling]="isChoosingStarter">
+      @if (isChoosingStarter) {
+        <div class="starter-rolling" role="status" aria-live="polite"><span>✦</span><strong>Tirage en cours…</strong></div>
+      } @else {
+        <button type="button" (click)="chooseStartingPlayer()" aria-label="Tirer au sort le joueur qui commence">
+          <span aria-hidden="true">✦</span>
+          <strong>Qui commence&nbsp;?</strong>
+          <small>Toucher pour tirer au sort</small>
+        </button>
+      }
+    </div>
+  }
 
   @if (settingsOpen) {
     <aside class="settings-panel" aria-label="Réglages de la partie">
