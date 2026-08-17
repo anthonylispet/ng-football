@@ -82,6 +82,7 @@ button { touch-action: manipulation; -webkit-tap-highlight-color: transparent; }
   --accent: #d45b42;
   --accent-rgb: 212,91,66;
   position: relative;
+  isolation: isolate;
   display: grid;
   min-width: 0;
   min-height: 0;
@@ -185,7 +186,7 @@ button { touch-action: manipulation; -webkit-tap-highlight-color: transparent; }
 
 .settings-panel {
   position: absolute;
-  z-index: 5;
+  z-index: 10;
   top: 62px;
   right: 10px;
   display: grid;
