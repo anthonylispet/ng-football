@@ -44,24 +44,38 @@ describe('LifeCounterComponent', () => {
 
     const draw = component.chooseStartingPlayer(2);
     expect(component.isChoosingStarter).toBe(true);
-    await vi.runAllTimersAsync();
+    await vi.advanceTimersByTimeAsync(3000);
     await draw;
 
     expect(component.isChoosingStarter).toBe(false);
     expect(component.highlightedStarterIndex).toBe(2);
     expect(component.state.startingPlayerIndex).toBe(2);
+    expect(component.starterResultVisible).toBe(true);
+
+    await vi.advanceTimersByTimeAsync(5000);
+    expect(component.highlightedStarterIndex).toBeNull();
+    expect(component.starterResultVisible).toBe(false);
   });
 
   it('offers a new draw after restarting the game', async () => {
     vi.useFakeTimers();
     const component = new LifeCounterComponent();
     const draw = component.chooseStartingPlayer(1);
-    await vi.runAllTimersAsync();
+    await vi.advanceTimersByTimeAsync(3000);
     await draw;
 
     component.resetGame();
 
     expect(component.state.startingPlayerIndex).toBeNull();
     expect(component.highlightedStarterIndex).toBeNull();
+  });
+
+  it('shows a defeat at zero life and can restore the player to one', () => {
+    const component = new LifeCounterComponent();
+    component.state.players[0].life = 0;
+
+    component.revivePlayer(0);
+
+    expect(component.state.players[0].life).toBe(1);
   });
 });

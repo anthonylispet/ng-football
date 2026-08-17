@@ -17,8 +17,8 @@
 
   <div class="players-grid players-{{ state.players.length }}">
     @for (player of state.players; track trackPlayer($index); let playerIndex = $index) {
-      <article class="player-card {{ player.theme }}" [class.in-danger]="player.life <= 10" [class.starter-highlight]="highlightedStarterIndex === playerIndex" [class.starter-selected]="state.startingPlayerIndex === playerIndex && !isChoosingStarter">
-        @if (state.startingPlayerIndex === playerIndex && !isChoosingStarter) {
+      <article class="player-card {{ player.theme }}" [class.in-danger]="player.life <= 10 && player.life > 0" [class.starter-highlight]="highlightedStarterIndex === playerIndex" [class.starter-selected]="state.startingPlayerIndex === playerIndex && starterResultVisible">
+        @if (state.startingPlayerIndex === playerIndex && starterResultVisible) {
           <span class="starter-badge">✦ Commence</span>
         }
         <input class="player-name" [value]="player.name" maxlength="18" (change)="updatePlayerName(playerIndex, $event)" [attr.aria-label]="'Nom du joueur ' + (playerIndex + 1)">
@@ -45,6 +45,18 @@
             </div>
           }
         </div>
+
+        @if (player.life <= 0) {
+          <div class="defeat-overlay" role="status" aria-live="polite">
+            <img src="assets/edgar-markov-laughing.png" alt="Edgar Markov riant de la défaite" loading="lazy">
+            <div class="defeat-copy">
+              <span>Défaite</span>
+              <strong>Edgar se régale…</strong>
+              <small>{{ player.name }} tombe à 0 PV</small>
+              <button type="button" (click)="revivePlayer(playerIndex)" [attr.aria-label]="'Ramener ' + player.name + ' à 1 point de vie'">↻ Revenir à 1 PV</button>
+            </div>
+          </div>
+        }
       </article>
     }
   </div>

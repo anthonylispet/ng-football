@@ -32,6 +32,7 @@ export class LifeCounterComponent implements OnInit, OnDestroy {
   private readonly themes = ['ember', 'tide', 'grove', 'amethyst'];
   private history: CounterState[] = [];
   private destroyed = false;
+  private starterResultTimer?: ReturnType<typeof setTimeout>;
 
   state: CounterState = this.createState(4, 40);
   settingsOpen = false;
@@ -39,6 +40,7 @@ export class LifeCounterComponent implements OnInit, OnDestroy {
   isFullscreen = false;
   isChoosingStarter = false;
   highlightedStarterIndex: number | null = null;
+  starterResultVisible = false;
 
   constructor(private readonly changeDetector?: ChangeDetectorRef) {}
 
@@ -49,6 +51,7 @@ export class LifeCounterComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     this.destroyed = true;
+    if (this.starterResultTimer) clearTimeout(this.starterResultTimer);
   }
 
   get canUndo(): boolean {
@@ -81,6 +84,7 @@ export class LifeCounterComponent implements OnInit, OnDestroy {
     this.state.players = this.state.players.slice(0, count);
     this.state.startingPlayerIndex = null;
     this.highlightedStarterIndex = null;
+    this.hideStarterResult();
     this.persist();
   }
 
@@ -89,6 +93,7 @@ export class LifeCounterComponent implements OnInit, OnDestroy {
 
     this.settingsOpen = false;
     this.isChoosingStarter = true;
+    this.hideStarterResult();
     this.state.startingPlayerIndex = null;
     const playerCount = this.state.players.length;
     const randomIndex = Math.floor(Math.random() * playerCount);
@@ -108,9 +113,23 @@ export class LifeCounterComponent implements OnInit, OnDestroy {
     this.highlightedStarterIndex = targetIndex;
     this.state.startingPlayerIndex = targetIndex;
     this.isChoosingStarter = false;
+    this.starterResultVisible = true;
     this.changeDetector?.detectChanges();
     this.persist();
     this.vibrate([40, 35, 90]);
+    this.starterResultTimer = setTimeout(() => {
+      this.starterResultVisible = false;
+      this.highlightedStarterIndex = null;
+      this.changeDetector?.detectChanges();
+    }, 5000);
+  }
+
+  revivePlayer(playerIndex: number): void {
+    if (this.state.players[playerIndex].life > 0) return;
+    this.snapshot();
+    this.state.players[playerIndex].life = 1;
+    this.persist();
+    this.haptic();
   }
 
   setStartingLife(life: number): void {
@@ -156,6 +175,7 @@ export class LifeCounterComponent implements OnInit, OnDestroy {
     this.state.startingPlayerIndex = null;
     this.highlightedStarterIndex = null;
     this.isChoosingStarter = false;
+    this.hideStarterResult();
     this.confirmReset = false;
     this.settingsOpen = false;
     this.persist();
@@ -232,6 +252,12 @@ export class LifeCounterComponent implements OnInit, OnDestroy {
 
   private delay(duration: number): Promise<void> {
     return new Promise(resolve => setTimeout(resolve, duration));
+  }
+
+  private hideStarterResult(): void {
+    if (this.starterResultTimer) clearTimeout(this.starterResultTimer);
+    this.starterResultTimer = undefined;
+    this.starterResultVisible = false;
   }
 
   private vibrate(pattern: number | number[]): void {

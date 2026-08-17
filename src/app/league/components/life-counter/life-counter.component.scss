@@ -117,6 +117,15 @@ button { touch-action: manipulation; -webkit-tap-highlight-color: transparent; }
 .starter-rolling { align-self: center; display: flex; align-items: center; gap: 8px; padding: 10px 15px; border: 1px solid #c9ac57; border-radius: 99px; color: #f4e6b5; font-size: .72rem; background: #101812e8; box-shadow: 0 8px 30px #0009; }
 .starter-rolling span { color: #f5d675; animation: starter-spin .7s linear infinite; }
 
+.defeat-overlay { position: absolute; z-index: 6; inset: 0; display: grid; overflow: hidden; place-items: end center; border-radius: inherit; background: #160908; isolation: isolate; }
+.defeat-overlay::after { position: absolute; z-index: -1; inset: 0; content: ''; background: linear-gradient(180deg, transparent 30%, #170706b8 58%, #0b0504f5 100%); }
+.defeat-overlay img { position: absolute; z-index: -2; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: 50% 22%; filter: saturate(.9) contrast(1.05); }
+.defeat-copy { display: grid; width: 100%; justify-items: center; padding: 12px; color: #fff4de; text-align: center; text-shadow: 0 2px 8px #000; }
+.defeat-copy > span { color: #dfb65d; font-size: .5rem; font-weight: 950; letter-spacing: .18em; text-transform: uppercase; }
+.defeat-copy strong { margin-top: 2px; font-family: Georgia, serif; font-size: clamp(.95rem, 2.4vw, 1.3rem); font-weight: 500; }
+.defeat-copy small { margin-top: 2px; color: #d8c5b7; font-size: .58rem; }
+.defeat-copy button { min-height: 38px; margin-top: 8px; padding: 0 14px; border: 1px solid #dbb45d; border-radius: 10px; color: #fff0bb; font-size: .62rem; font-weight: 900; background: #4b1d18e8; box-shadow: 0 4px 14px #0008; }
+
 .player-name {
   z-index: 2;
   width: calc(100% - 20px);
@@ -226,6 +235,7 @@ button { touch-action: manipulation; -webkit-tap-highlight-color: transparent; }
   .starter-picker { top: 50px; }
   .starter-picker button { min-width: min(210px, calc(100vw - 36px)); min-height: 128px; border-radius: 19px; }
   .starter-badge { top: 5px; right: 6px; padding: 3px 5px; font-size: .43rem; }
+  .defeat-copy { align-content: end; padding: 7px; }.defeat-copy strong { font-size: .88rem; }.defeat-copy small { font-size: .5rem; }.defeat-copy button { min-height: 34px; margin-top: 5px; padding-inline: 10px; }
   .life-side { min-width: 0; }
   .life-total { font-size: clamp(3.2rem, 10vh, 5.5rem); }
   .counter-stepper button { min-height: 32px; }
@@ -295,6 +305,7 @@ button { touch-action: manipulation; -webkit-tap-highlight-color: transparent; }
   .player-card { grid-template-rows: 25px minmax(38px, 1fr) auto; border-radius: 10px; }
   .starter-picker { top: 46px; }
   .starter-picker button { min-height: 112px; }
+  .defeat-copy { padding: 5px; }.defeat-copy > span, .defeat-copy small { display: none; }.defeat-copy strong { font-size: .8rem; }.defeat-copy button { min-height: 30px; margin-top: 3px; }
   .player-name { padding-block: 2px; }
   .mini-counter { padding-block: 2px; }
   .counter-stepper { margin-top: 0; }
